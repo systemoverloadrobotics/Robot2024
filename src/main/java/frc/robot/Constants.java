@@ -6,6 +6,7 @@ package frc.robot;
 
 
 import java.io.IOException;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -77,6 +78,14 @@ public final class Constants {
 
     public static final class Motor {
         // Motor indexes + configs here
+        public static final int SWERVE_FRONT_LEFT_POWER = 1;
+        public static final int SWERVE_FRONT_LEFT_STEER = 2;
+        public static final int SWERVE_FRONT_RIGHT_POWER = 3;
+        public static final int SWERVE_FRONT_RIGHT_STEER = 4;
+        public static final int SWERVE_BACK_LEFT_POWER = 5;
+        public static final int SWERVE_BACK_LEFT_STEER = 6;
+        public static final int SWERVE_BACK_RIGHT_POWER = 7;
+        public static final int SWERVE_BACK_RIGHT_STEER = 8;
     }
 
     public static final class Pneumatics {

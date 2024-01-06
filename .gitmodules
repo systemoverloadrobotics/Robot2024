@@ -1,0 +1,3 @@
+[submodule "src/main/java/frc/SORUtil"]
+	path = src/main/java/frc/SORUtil
+	url = https://github.com/systemoverloadrobotics/SORUtil.git

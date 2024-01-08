@@ -104,9 +104,9 @@ public final class Constants {
         public static final double SWERVE_ROTATION_MAX_OUTPUT = 0.7;
 
         public static final double DISTANCE_PER_REV = Units.inchesToMeters(4 * Math.PI);
-        public static final double NEO_MAX_SPEED = 5600; // RPM
+        public static final double NEO_MAX_SPEED = 5820; // RPM the old speed was 5600
         public static final double MAX_WHEEL_SPEED = ((NEO_MAX_SPEED / 60) * DISTANCE_PER_REV);
-        public static final double SWERVE_MAX_SPEED = 6; // m/s
+        public static final double SWERVE_MAX_SPEED = 5; // m/s, was 6
         public static final double SWERVE_MAX_AUTO_SPEED = 0.2 * MAX_WHEEL_SPEED; // m/s
         public static final double SWERVE_MAX_PRECISION_SPEED = 0.1 * MAX_WHEEL_SPEED; // m/s
         public static final double SWERVE_MAX_ACCELERATION = 2; // m/s^2

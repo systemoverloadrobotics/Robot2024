@@ -24,7 +24,7 @@ import org.littletonrobotics.junction.Logger;
 public class SwerveModule extends SubsystemBase {
 
     private java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SwerveModule.class.getName());
-
+    
     private SuSparkMax powerController;
     private SuSparkMax steeringController;
     private final String name;
@@ -37,9 +37,11 @@ public class SwerveModule extends SubsystemBase {
         powerControllerConfig.setPidProfile(Constants.Swerve.POWER_PROFILE);
         powerControllerConfig.setCurrentLimit(Constants.Swerve.SWERVE_POWER_CURRENT_LIMIT);
         powerControllerConfig.setMaxOutput(Constants.Swerve.SWERVE_POWER_MAX_OUTPUT);
+        
 
+        // CHANGE GEAR RATIO: DONE
         SensorConfiguration powerSensorConfig =
-                new SensorConfiguration(new SensorConfiguration.IntegratedSensorSource(6.75));
+                new SensorConfiguration(new SensorConfiguration.IntegratedSensorSource(6.12)); // was 6.75
         powerController = new SuSparkMax(new CANSparkMax(powerID, MotorType.kBrushless), name + " Power",
                 powerControllerConfig, powerSensorConfig);
 

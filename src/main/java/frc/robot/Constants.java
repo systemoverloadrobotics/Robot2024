@@ -102,9 +102,9 @@ public final class Constants {
     }
 
     public static final class Swerve {
-        // SET THESE UP! TODO
-        public static final PidProfile STEER_PROFILE = new PidProfile(0, 0, 0.);
-        public static final PidProfile POWER_PROFILE = new PidProfile(0, 0, 0);
+        // TODO: SET THESE UP! Currently placeholders
+        public static final PidProfile STEER_PROFILE = new PidProfile(0.03, 0, 0.1);
+        public static final PidProfile POWER_PROFILE = new PidProfile(0.0002, 0.0, 0);
 
         public static final double SWERVE_POWER_CURRENT_LIMIT = 60.0;
         public static final double SWERVE_POWER_MAX_OUTPUT = 0.8;

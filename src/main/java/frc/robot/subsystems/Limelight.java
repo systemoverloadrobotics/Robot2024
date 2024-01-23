@@ -7,45 +7,74 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Limelight extends SubsystemBase {
 
+  private static NetworkTableInstance table;
+  private final java.util.logging.Logger logger;
+
   public Limelight() {
+    logger = java.util.logging.Logger.getLogger(Limelight.class.getName());
+    table = null;
+  }
 
 
+  /**
+	 * Helper method to get an entry from the Limelight NetworkTable.
+	 * 
+	 * @param key
+	 *            Key for entry.
+	 * @return NetworkTableEntry of given entry.
+	 */
+  private static NetworkTableEntry getValue(String key) {
+		if (table == null) {
+			table = NetworkTableInstance.getDefault();
+		}
 
+		return table.getTable("limelight").getEntry(key);
   }
 
   /**
-   * Example command factory method.
-   *
-   * @return a command
+   * @return the distance in the X direction to the tag
    */
-  public Command exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
+  public double getX() {
+    return getValue("tx").getDouble(0);
   }
 
   /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
+   * @return the distance in the Y direction to the tag
    */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
+  public double getY() {
+    return getValue("ty").getDouble(0);
   }
+
+  /**
+   * @return The Percentage of area of the tag that is seen (100% means 100% visable)
+   */
+  public double getArea() {
+    return getValue("ta").getDouble(0);
+  }
+
+  /**
+   * @return If Camera is detecting a tag
+   */
+  public boolean detectTag() {
+    return getValue("tv").getDouble(0) == 1;
+  }
+
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    Logger.recordOutput("LimeLight/DistanceToTarget(x)",table.getEntry("tx").getDouble(0.0));
+    Logger.recordOutput("LimeLight/DistanceToTarget(y)",table.getEntry("ty").getDouble(0.0));
+    Logger.recordOutput("LimeLight/TargetAreaVisable",table.getEntry("ta").getDouble(0.0));
+
   }
 
   @Override

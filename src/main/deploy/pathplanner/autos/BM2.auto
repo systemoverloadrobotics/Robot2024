@@ -5,16 +5,35 @@
       "x": 1.5366277154892876,
       "y": 5.523008323503558
     },
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "deadline",
+          "type": "sequential",
           "data": {
-            "commands": []
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoMoveToShoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoShoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoMoveToIntake"
+                }
+              }
+            ]
           }
         },
         {
@@ -24,9 +43,28 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "sequential",
           "data": {
-            "commands": []
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoIntake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoMoveToShoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoShoot"
+                }
+              }
+            ]
           }
         }
       ]

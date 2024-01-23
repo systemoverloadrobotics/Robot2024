@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.965168147702859,
+        "x": 1.6509545853297636,
         "y": 5.55166206318451
       },
       "isLocked": false,
@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 2.4893645598809515,
+        "x": 2.3591735914195437,
         "y": 5.55166206318451
       },
       "prevControl": {
-        "x": 1.1758973709365361,
-        "y": 5.55166206318451
+        "x": 2.259175732876478,
+        "y": 5.55231649943152
       },
       "nextControl": {
-        "x": 3.802831748825372,
-        "y": 5.55166206318451
+        "x": 2.495508288762723,
+        "y": 5.55076982040085
       },
       "isLocked": false,
       "linkedName": null
@@ -52,12 +52,12 @@
         "y": 5.78089198063213
       },
       "prevControl": {
-        "x": 6.006611105717846,
-        "y": 5.838199459994034
+        "x": 7.578844861129818,
+        "y": 5.61893716907244
       },
       "nextControl": {
-        "x": 9.086888121420222,
-        "y": 5.723584501270225
+        "x": 7.393593142987428,
+        "y": 6.553729993026788
       },
       "isLocked": false,
       "linkedName": null
@@ -84,8 +84,8 @@
         "y": 5.55166206318451
       },
       "prevControl": {
-        "x": 2.013720135438128,
-        "y": 6.631549877410401
+        "x": 2.8299532009813744,
+        "y": 5.55166206318451
       },
       "nextControl": null,
       "isLocked": false,
@@ -105,19 +105,124 @@
     },
     {
       "waypointRelativePos": 0.0,
-      "rotationDegrees": 180.0,
+      "rotationDegrees": -1.060064510149843,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": -0.09788404022067022,
       "rotateFast": false
     }
   ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
+      "name": "CollectB",
       "waypointRelativePos": 3.0,
       "command": {
         "type": "sequential",
         "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoMoveToShoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "ShootA",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoMoveToShoot"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoShoot"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoMoveToIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoIntake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "CollectAShootB",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoMoveToShoot"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoShoot"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoMoveToIntake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "ShootC",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AutoShoot"
+              }
+            }
+          ]
         }
       }
     }
@@ -130,7 +235,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.69708312329996,
+    "rotation": -0.06914563474250242,
     "rotateFast": false
   },
   "reversed": false,

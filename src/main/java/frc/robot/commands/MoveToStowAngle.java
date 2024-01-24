@@ -15,8 +15,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class MoveToStowAngle extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final frc.robot.subsystems.Pivot pivot;
-
   private LinearFilter lf;
+  private boolean flag;
+
   /**
    * Creates a new ExampleCommand.
    *
@@ -25,6 +26,7 @@ public class MoveToStowAngle extends Command {
   public MoveToStowAngle(frc.robot.subsystems.Pivot subsystem) {
     lf = LinearFilter.movingAverage(10);
     pivot = subsystem;
+    flag = false;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -43,9 +45,8 @@ public class MoveToStowAngle extends Command {
     double calc = lf.calculate(pivot.pivot.outputPosition());
     
     if ((calc > Constants.Pivot.STOW_ANGLE - .5) && (calc < Constants.Pivot.STOW_ANGLE + .5)) {
-      end(true);
+      flag = true;
     }
-
   }
 
   // Called once the command ends or is interrupted.
@@ -57,6 +58,6 @@ public class MoveToStowAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return flag;
   }
 }

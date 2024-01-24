@@ -30,7 +30,7 @@ public class OuttakeClaw extends Command {
   public void execute() {
     double value = lf.calculate(intake.outtakeBottom.outputVelocity());
     intake.setFlywheels();
-    if (value >= 2900 && value <= 3100) {
+    if (value >= 2900 && value <= 3100) { // TODO: Change Values to Constants
         intake.outtake();
     }
   }

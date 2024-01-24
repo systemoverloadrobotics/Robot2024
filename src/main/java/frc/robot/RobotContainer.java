@@ -5,12 +5,21 @@
 package frc.robot;
 
 import frc.robot.commands.Autos;
+import frc.robot.commands.ClimbDownCommand;
+import frc.robot.commands.ClimbUpCommand;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.IntakeClaw;
+import frc.robot.commands.MoveToAmpAngle;
+import frc.robot.commands.MoveToIntakeAngle;
+import frc.robot.commands.MoveToSpeakerAngle;
+import frc.robot.commands.MoveToStowAngle;
+import frc.robot.commands.OuttakeClaw;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.commands.auto.AutoIntake;
 import frc.robot.commands.auto.AutoMoveToIntake;
 import frc.robot.commands.auto.AutoMoveToShoot;
 import frc.robot.commands.auto.AutoShoot;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
@@ -29,20 +38,39 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  private final SendableChooser<Command> autoSelector;
+
   private final Swerve swerve;
   private final Pivot pivot;
   private final Intake intake;
-  private final SendableChooser<Command> autoSelector;
+  private final Climb climb;
 
   private final SwerveDrive swerveDrive;
+  private final ClimbDownCommand climbDownCommand;
+  private final ClimbUpCommand climbUpCommand;
+  private final IntakeClaw intakeClaw;
+  private final OuttakeClaw outtakeClaw;
+  private final MoveToAmpAngle moveToAmpAngle;
+  private final MoveToIntakeAngle moveToIntakeAngle;
+  private final MoveToSpeakerAngle moveToSpeakerAngle;
+  private final MoveToStowAngle moveToStowAngle;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     swerve = new Swerve();
     pivot = new Pivot();
     intake = new Intake();
+    climb = new Climb();
 
     swerveDrive = new SwerveDrive(swerve, null, null, null, null); // TODO: FILL WITH REAL VALUES
+    climbDownCommand = new ClimbDownCommand(climb);
+    climbUpCommand = new ClimbUpCommand(climb);
+    intakeClaw = new IntakeClaw(intake);
+    outtakeClaw = new OuttakeClaw(intake);
+    moveToAmpAngle = new MoveToAmpAngle(pivot);
+    moveToIntakeAngle = new MoveToIntakeAngle(pivot);
+    moveToSpeakerAngle = new MoveToSpeakerAngle(pivot);
+    moveToStowAngle = new MoveToStowAngle(pivot);
 
     swerve.setDefaultCommand(swerveDrive);
 

@@ -103,10 +103,10 @@ public final class Constants {
         public static final int CLIMB_LEFT = 9;
         public static final int CLIMB_RIGHT = 10;
         public static final int PIVOT = 11;
-        public static final int ROLLER_INTAKE_BOTTOM = 11;
-        public static final int ROLLER_INTAKE_TOP = 12;
-        public static final int ROLLER_OUTTAKE_BOTTOM = 13;
-        public static final int ROLLER_OUTTAKE_TOP = 14;
+        public static final int ROLLER_INTAKE = 12;
+        public static final int ROLLER_RELAY = 13;
+        public static final int ROLLER_OUTTAKE_BOTTOM = 14;
+        public static final int ROLLER_OUTTAKE_TOP = 15;
     }
   
     public static final class Pivot {

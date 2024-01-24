@@ -113,6 +113,11 @@ public final class Constants {
         public static final PidProfile PID_PROFILE = new PidProfile(0, 0, 0);
         public static final double PIVOT_CURRENT_LIMIT = 30;
         public static final double PIVOT_MAX_OUTPUT = 0.8;
+
+        public static final double INTAKE_ANGLE = 3.3;
+        public static final double AMP_ANGLE = 4.4;
+        public static final double SPEAKER_ANGLE = 5.5;
+        public static final double STOW_ANGLE = 6.6;
     }
     public static final class Pneumatics {
         

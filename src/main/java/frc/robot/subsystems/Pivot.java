@@ -18,7 +18,7 @@ import frc.sorutil.motor.SuSparkMax;
 
 public class Pivot extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-  SuSparkMax pivot;
+  public SuSparkMax pivot;
 
   public Pivot() {
     MotorConfiguration pivotControllerConfig = new MotorConfiguration();
@@ -40,9 +40,19 @@ public class Pivot extends SubsystemBase {
     pivot.set(ControlMode.POSITION, 90);
   }
 
-  public void intake() {
-    pivot.set(ControlMode.POSITION, 10);
+  public void moveToIntakeAngle() {
+    pivot.set(ControlMode.POSITION, Constants.Pivot.INTAKE_ANGLE);
   }
+  public void moveToAmpAngle() {
+    pivot.set(ControlMode.POSITION, Constants.Pivot.AMP_ANGLE);
+  }
+  public void moveToSpeakerAngle() {
+    pivot.set(ControlMode.POSITION, Constants.Pivot.SPEAKER_ANGLE);
+  }
+  public void moveToStowAngle() {
+    pivot.set(ControlMode.POSITION, Constants.Pivot.STOW_ANGLE);
+  }
+  
 
   public void stop() {
     pivot.set(ControlMode.PERCENT_OUTPUT, 0);

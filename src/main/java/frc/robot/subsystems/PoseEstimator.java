@@ -8,14 +8,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 
 import org.littletonrobotics.junction.Logger;
-
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class PoseEstimator extends SubsystemBase {
 
@@ -23,7 +20,6 @@ public class PoseEstimator extends SubsystemBase {
   private Limelight limelight;
 
   private final java.util.logging.Logger logger;
-
   private Pose2d prevPose2D;
   private SwerveDrivePoseEstimator poseEstimator;
 
@@ -33,9 +29,12 @@ public class PoseEstimator extends SubsystemBase {
     this.limelight = limelight;
 
     //TODO: Figure out initial pose for the pose estimator below.
-    poseEstimator = new SwerveDrivePoseEstimator(Constants.RobotDimensions.SWERVE_DRIVE_KINEMATICS,
+    poseEstimator = new SwerveDrivePoseEstimator(
+      Constants.RobotDimensions.SWERVE_DRIVE_KINEMATICS,
       swerve.getRotation2d(),
-      swerve.getModulePositions(), null);
+      swerve.getModulePositions(), 
+      null
+    );
     prevPose2D = poseEstimator.getEstimatedPosition();
   }
 
@@ -43,9 +42,9 @@ public class PoseEstimator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    Logger.recordOutput("LimeLight/DistanceToTarget(x)",table.getEntry("tx").getDouble(0.0));
-    Logger.recordOutput("LimeLight/DistanceToTarget(y)",table.getEntry("ty").getDouble(0.0));
-    Logger.recordOutput("LimeLight/TargetAreaVisable",table.getEntry("ta").getDouble(0.0));
+    Logger.recordOutput("LimeLight/DistanceToTarget(x)", LimelightHelpers.getTX());
+    Logger.recordOutput("LimeLight/DistanceToTarget(y)", LimelightHelpers.getTY());
+    Logger.recordOutput("LimeLight/TargetAreaVisable", LimelightHelpers.getTA());
   }
 
   @Override

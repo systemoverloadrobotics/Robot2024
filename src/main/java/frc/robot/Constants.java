@@ -50,11 +50,13 @@ public final class Constants {
     }
 
     public static final class Climb {
+        // TODO: PLACEHOLDER PID
         public static final PidProfile PID_PROFILE = new PidProfile(0, 0, 0);
         public static final double CLIMB_CURRENT_LIMIT = 40.0;
         public static final double CLIMB_MAX_OUTPUT = 0.5;
     }
     public static final class Inouttake {
+        // TODO: PLACEHOLDER PID
         public static final PidProfile PID_PROFILE = new PidProfile(0, 0, 0);
         public static final double OUTTAKE_CURRENT_LIMIT = 30.0;
         public static final double OUTTAKE_MAX_OUTPUT = 0.8;
@@ -63,7 +65,7 @@ public final class Constants {
     }
     
     public static final class Vision {
-        // Camera location from the center of the robot
+        // Camera location from the center of the robot TODO: PLACEHOLDERS
         public static final double CAMERA_POSITION_X = 0; // Meters
         public static final double CAMERA_POSITION_Y = 0.5; // Meters
         public static final double CAMERA_POSITION_Z = 0; // Meters
@@ -114,6 +116,7 @@ public final class Constants {
         public static final double PIVOT_CURRENT_LIMIT = 30;
         public static final double PIVOT_MAX_OUTPUT = 0.8;
 
+        // TODO: PLACEHOLDERS!
         public static final double INTAKE_ANGLE = 3.3;
         public static final double AMP_ANGLE = 4.4;
         public static final double SPEAKER_ANGLE = 5.5;

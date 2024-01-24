@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.littletonrobotics.junction.Logger;
@@ -23,7 +24,6 @@ public class Limelight extends SubsystemBase {
     logger = java.util.logging.Logger.getLogger(Limelight.class.getName());
     table = null;
   }
-
 
   /**
 	 * Helper method to get an entry from the Limelight NetworkTable.
@@ -44,36 +44,36 @@ public class Limelight extends SubsystemBase {
    * @return the distance in the X direction to the tag
    */
   public double getX() {
-    return getValue("tx").getDouble(0);
+    return LimelightHelpers.getTX();
   }
 
   /**
    * @return the distance in the Y direction to the tag
    */
   public double getY() {
-    return getValue("ty").getDouble(0);
+    return LimelightHelpers.getTY();
   }
 
   /**
    * @return The Percentage of area of the tag that is seen (100% means 100% visable)
    */
   public double getArea() {
-    return getValue("ta").getDouble(0);
+    return LimelightHelpers.getTA();
   }
 
   /**
    * @return If Camera is detecting a tag
    */
   public boolean detectTag() {
-    return getValue("tv").getDouble(0) == 1;
+    return LimelightHelpers.getTV();
   }
 
 
   @Override
   public void periodic() {
-    Logger.recordOutput("LimeLight/DistanceToTarget(x)",table.getEntry("tx").getDouble(0.0));
-    Logger.recordOutput("LimeLight/DistanceToTarget(y)",table.getEntry("ty").getDouble(0.0));
-    Logger.recordOutput("LimeLight/TargetAreaVisable",table.getEntry("ta").getDouble(0.0));
+    Logger.recordOutput("LimeLight/DistanceToTarget(x)", LimelightHelpers.getTX());
+    Logger.recordOutput("LimeLight/DistanceToTarget(y)", LimelightHelpers.getTY());
+    Logger.recordOutput("LimeLight/TargetAreaVisable", LimelightHelpers.getTA());
 
   }
 

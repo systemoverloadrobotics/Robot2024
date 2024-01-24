@@ -102,15 +102,18 @@ public final class Constants {
 
         public static final int CLIMB_LEFT = 9;
         public static final int CLIMB_RIGHT = 10;
-
+        public static final int PIVOT = 11;
         public static final int ROLLER_INTAKE_BOTTOM = 11;
         public static final int ROLLER_INTAKE_TOP = 12;
         public static final int ROLLER_OUTTAKE_BOTTOM = 13;
         public static final int ROLLER_OUTTAKE_TOP = 14;
-
-
     }
-
+  
+    public static final class Pivot {
+        public static final PidProfile PID_PROFILE = new PidProfile(0, 0, 0);
+        public static final double PIVOT_CURRENT_LIMIT = 30;
+        public static final double PIVOT_MAX_OUTPUT = 0.8;
+    }
     public static final class Pneumatics {
         
     }

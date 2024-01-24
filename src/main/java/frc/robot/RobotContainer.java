@@ -4,10 +4,17 @@
 
 package frc.robot;
 
-import frc.robot.Constants.Swerve;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.SwerveDrive;
+import frc.robot.commands.auto.AutoIntake;
+import frc.robot.commands.auto.AutoMoveToIntake;
+import frc.robot.commands.auto.AutoMoveToShoot;
+import frc.robot.commands.auto.AutoShoot;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.Swerve;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -23,11 +30,22 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Swerve swerve;
+  private final Pivot pivot;
+  private final Intake intake;
   private final SendableChooser<Command> autoSelector;
+
+  private final SwerveDrive swerveDrive;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     swerve = new Swerve();
+    pivot = new Pivot();
+    intake = new Intake();
+
+    swerveDrive = new SwerveDrive(swerve, null, null, null, null); // TODO: FILL WITH REAL VALUES
+
+    swerve.setDefaultCommand(swerveDrive);
+
     // Configure the trigger bindings
     configureBindings();
     autoSelector = AutoBuilder.buildAutoChooser();
@@ -35,10 +53,10 @@ public class RobotContainer {
   }
 
   private void configureAuto() {
-    // NamedCommands.registerCommand("AutoMoveToIntake", [ADD COMMAND]);
-    // NamedCommands.registerCommand("AutoIntake", [ADD COMMAND]);
-    // NamedCommands.registerCommand("AutoMoveToShoot", [ADD COMMAND]);
-    // NamedCommands.registerCommand("AutoShoot", [ADD COMMAND]);
+    NamedCommands.registerCommand("AutoMoveToIntake", new AutoMoveToIntake(pivot));
+    NamedCommands.registerCommand("AutoIntake", new AutoIntake(intake));
+    NamedCommands.registerCommand("AutoMoveToShoot", new AutoMoveToShoot(pivot));
+    NamedCommands.registerCommand("AutoShoot", new AutoShoot(intake));
 
     autoSelector.addOption("BM2", AutoBuilder.followPath(PathPlannerPath.fromPathFile("BM2")));
     autoSelector.addOption("BM3", AutoBuilder.followPath(PathPlannerPath.fromPathFile("BM3")));

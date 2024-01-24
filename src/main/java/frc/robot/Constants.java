@@ -156,7 +156,8 @@ public final class Constants {
         
     }
     public static final class Auto {
-        
+        public static final double AUTO_INTAKE_TIME = 2;
+        public static final double AUTO_OUTTAKE_TIME = 0.5;
     }
     public static final class PoseEstimation {
         

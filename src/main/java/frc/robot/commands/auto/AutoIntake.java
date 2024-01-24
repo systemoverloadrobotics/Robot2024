@@ -2,22 +2,23 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.auto;
 
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
-import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class OuttakeClaw extends Command {
+public class AutoIntake extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Intake intake;
-  private final LinearFilter lf;
-  
-  public OuttakeClaw(Intake subsystem) {
+  private final double startTime;
+
+  public AutoIntake(Intake subsystem) {
     intake = subsystem;
-    this.lf = LinearFilter.movingAverage(10);
+    startTime = Timer.getFPGATimestamp();
+    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
 
@@ -28,11 +29,7 @@ public class OuttakeClaw extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double value = lf.calculate(intake.outtakeBottom.outputVelocity());
-    intake.setFlywheels();
-    if (value >= 2900 && value <= 3100) { // TODO: Change Values to Constants
-        intake.outtake();
-    }
+    intake.intake();
   }
 
   // Called once the command ends or is interrupted.
@@ -44,6 +41,6 @@ public class OuttakeClaw extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return Timer.getFPGATimestamp() - startTime >= Constants.Auto.AUTO_INTAKE_TIME;
   }
 }

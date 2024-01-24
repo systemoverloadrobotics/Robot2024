@@ -34,7 +34,7 @@ public class Pivot extends SubsystemBase {
      );
   }
 
-  // ADD FEED FORWARD
+  // TODO: ADD FEED FORWARD
 
   public void stow() {
     pivot.set(ControlMode.POSITION, 90);

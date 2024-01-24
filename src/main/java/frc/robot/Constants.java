@@ -54,6 +54,13 @@ public final class Constants {
         public static final double CLIMB_CURRENT_LIMIT = 40.0;
         public static final double CLIMB_MAX_OUTPUT = 0.5;
     }
+    public static final class Inouttake {
+        public static final PidProfile PID_PROFILE = new PidProfile(0, 0, 0);
+        public static final double OUTTAKE_CURRENT_LIMIT = 30.0;
+        public static final double OUTTAKE_MAX_OUTPUT = 0.8;
+        public static final double INTAKE_CURRENT_LIMIT = 30.0;
+        public static final double INTAKE_MAX_OUTPUT = 0.8;
+    }
     
     public static final class Vision {
         // Camera location from the center of the robot
@@ -96,22 +103,25 @@ public final class Constants {
         public static final int CLIMB_LEFT = 9;
         public static final int CLIMB_RIGHT = 10;
         public static final int PIVOT = 11;
-        
+        public static final int ROLLER_INTAKE_BOTTOM = 11;
+        public static final int ROLLER_INTAKE_TOP = 12;
+        public static final int ROLLER_OUTTAKE_BOTTOM = 13;
+        public static final int ROLLER_OUTTAKE_TOP = 14;
     }
+  
     public static final class Pivot {
         public static final PidProfile PID_PROFILE = new PidProfile(0, 0, 0);
         public static final double PIVOT_CURRENT_LIMIT = 30;
         public static final double PIVOT_MAX_OUTPUT = 0.8;
-        
     }
     public static final class Pneumatics {
         
     }
 
     public static final class Swerve {
-        // SET THESE UP! TODO
-        public static final PidProfile STEER_PROFILE = new PidProfile(0, 0, 0.);
-        public static final PidProfile POWER_PROFILE = new PidProfile(0, 0, 0);
+        // TODO: SET THESE UP! Currently placeholders
+        public static final PidProfile STEER_PROFILE = new PidProfile(0.03, 0, 0.1);
+        public static final PidProfile POWER_PROFILE = new PidProfile(0.0002, 0.0, 0);
 
         public static final double SWERVE_POWER_CURRENT_LIMIT = 60.0;
         public static final double SWERVE_POWER_MAX_OUTPUT = 0.8;

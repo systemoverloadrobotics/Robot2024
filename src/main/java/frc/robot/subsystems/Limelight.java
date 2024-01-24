@@ -23,6 +23,7 @@ public class Limelight extends SubsystemBase {
   public Limelight() {
     logger = java.util.logging.Logger.getLogger(Limelight.class.getName());
     table = null;
+    logger.info("Limelight initialized");
   }
 
   /**
@@ -74,7 +75,6 @@ public class Limelight extends SubsystemBase {
     Logger.recordOutput("LimeLight/DistanceToTarget(x)", LimelightHelpers.getTX());
     Logger.recordOutput("LimeLight/DistanceToTarget(y)", LimelightHelpers.getTY());
     Logger.recordOutput("LimeLight/TargetAreaVisable", LimelightHelpers.getTA());
-
   }
 
   @Override

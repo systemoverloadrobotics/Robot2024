@@ -8,10 +8,17 @@ package frc.robot;
 import java.io.IOException;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import frc.sorutil.motor.PidProfile;
@@ -134,6 +141,19 @@ public final class Constants {
         
     }
     public static final class PoseEstimation {
-        
+        public static final Matrix<N3, N1> POSE_GYRO_STD = VecBuilder.fill(0.1, 0.1, 0.1);
+        public static final Matrix<N3, N1> POSE_VISION_STD = VecBuilder.fill(0.1, 0.1, 0.1);
+    }
+
+    public static final class Scoring {
+
+        public static final double AUTO_SWERVE_MAX_VELOCITY = 4; // Meters per second
+        public static final double AUTO_SWERVE_MAX_ACCELERATION = 2.5; // Meters per second
+
+        public static final PIDController X_CONTROLLER = new PIDController(0, 0, 0);
+        public static final PIDController Y_CONTROLLER = new PIDController(0, 0, 0);
+        public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(0.0, 0.0, 0.0,
+            new Constraints(AUTO_SWERVE_MAX_VELOCITY, AUTO_SWERVE_MAX_ACCELERATION));
+        public static final double TRAJECTORY_SAMPLE_TIME = 0; // seconds
     }
 }

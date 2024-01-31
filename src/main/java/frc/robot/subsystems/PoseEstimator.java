@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -32,14 +33,15 @@ public class PoseEstimator extends SubsystemBase {
     poseEstimator = new SwerveDrivePoseEstimator(
       Constants.RobotDimensions.SWERVE_DRIVE_KINEMATICS,
       swerve.getRotation2d(),
-      swerve.getModulePositions(), 
-      null
-    );
+      swerve.getModulePositions(),
+      new Pose2d(),Constants.PoseEstimation.POSE_GYRO_STD, Constants.PoseEstimation.POSE_VISION_STD);
     prevPose2D = poseEstimator.getEstimatedPosition();
   }
 
-
-
+  public Pose2d getEstimatPose2d() {
+      return poseEstimator.getEstimatedPosition();
+  }
+  
   @Override
   public void periodic() {
     Logger.recordOutput("LimeLight/DistanceToTarget(x)", LimelightHelpers.getTX());

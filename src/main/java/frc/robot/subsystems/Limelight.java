@@ -25,22 +25,6 @@ public class Limelight extends SubsystemBase {
     table = null;
     logger.info("Limelight initialized");
   }
-
-  /**
-	 * Helper method to get an entry from the Limelight NetworkTable.
-	 * 
-	 * @param key
-	 *            Key for entry.
-	 * @return NetworkTableEntry of given entry.
-	 */
-  private static NetworkTableEntry getValue(String key) {
-		if (table == null) {
-			table = NetworkTableInstance.getDefault();
-		}
-
-		return table.getTable("limelight").getEntry(key);
-  }
-
   /**
    * @return the distance in the X direction to the tag
    */

@@ -87,6 +87,9 @@ public class SwerveModule extends SubsystemBase {
         steeringController.set(ControlMode.POSITION, state.angle.getDegrees());
         
         Logger.recordOutput(stateName + "SteerPos", steeringController.outputPosition());
+        Logger.recordOutput(stateName + "SteerWant", state.angle.getDegrees());
+        Logger.recordOutput(stateName + "GoWant", state.speedMetersPerSecond);
+
     }
 
     public SwerveModulePosition getPosition() {

@@ -45,9 +45,9 @@ public class Swerve extends SubsystemBase {
         frontRight = new SwerveModule("Front Right", Constants.Motor.SWERVE_FRONT_RIGHT_POWER,
                 Constants.Motor.SWERVE_FRONT_RIGHT_STEER, 0, false, false);
         backLeft = new SwerveModule("Back Left", Constants.Motor.SWERVE_BACK_LEFT_POWER,
-                Constants.Motor.SWERVE_BACK_LEFT_STEER, 0, true, false);
+                Constants.Motor.SWERVE_BACK_LEFT_STEER, 0, false, false);
         backRight = new SwerveModule("Back Right", Constants.Motor.SWERVE_BACK_RIGHT_POWER,
-                Constants.Motor.SWERVE_BACK_RIGHT_STEER, 0, true, false);
+                Constants.Motor.SWERVE_BACK_RIGHT_STEER, 0, false, false);
         gyro.reset();
         gyro.resetDisplacement();
         
@@ -93,7 +93,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void setDrivebaseWheelVectors(ChassisSpeeds chassisSpeeds, boolean forScoring) {
-        // ChassisSpeeds.discretize(chassisSpeeds, 0.02);
+        ChassisSpeeds.discretize(chassisSpeeds, 0.02);
         SwerveModuleState[] moduleStates =
                 Constants.RobotDimensions.SWERVE_DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
         if (forScoring) {
@@ -101,8 +101,7 @@ public class Swerve extends SubsystemBase {
         } else {
             SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.Swerve.SWERVE_MAX_SPEED);
         }
-        Logger.recordOutput("SwerveDrive/IntendedStatetws",
-        moduleStates);
+        Logger.recordOutput("SwerveDrive/IntendedStatetws", moduleStates);
         setModuleStates(moduleStates);
     }
 

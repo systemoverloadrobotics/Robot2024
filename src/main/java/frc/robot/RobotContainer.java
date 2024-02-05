@@ -64,9 +64,9 @@ public class RobotContainer {
     swerve.setDefaultCommand(
       new SwerveDrive(
         swerve, 
-        () -> -Constants.Input.SWERVE_X_INPUT.get().getAsDouble(), 
+        () -> Constants.Input.SWERVE_X_INPUT.get().getAsDouble(), 
         () -> -Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), 
-        Constants.Input.SWERVE_ROTATION_INPUT.get(), 
+        () -> -Constants.Input.SWERVE_ROTATION_INPUT.get().getAsDouble(), 
         () -> false)
       );    
     // climbDownCommand = new ClimbDownCommand(climb);

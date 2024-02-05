@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import frc.sorutil.ConstantAxis;
 import frc.sorutil.motor.PidProfile;
 
 /**
@@ -38,8 +39,8 @@ public final class Constants {
 
     public static final class RobotDimensions {
         // TODO: replace these with actual dimensions
-        public static final double WIDTH = Units.inchesToMeters(30);
-        public static final double LENGTH = Units.inchesToMeters(30);
+        public static final double WIDTH = Units.inchesToMeters(28);
+        public static final double LENGTH = Units.inchesToMeters(28);
 
         public static final double WHEEL_CIRCUMFERENCE = Units.inchesToMeters(4) * Math.PI;
         public static final SwerveDriveKinematics SWERVE_DRIVE_KINEMATICS =
@@ -102,7 +103,7 @@ public final class Constants {
         public static final int SWERVE_BACK_RIGHT_POWER = 7;
         public static final int SWERVE_BACK_RIGHT_STEER = 8;
 
-        public static final int CLIMB_LEFT = 9;
+        public static final int CLIMB_LEFT = 19;
         public static final int CLIMB_RIGHT = 10;
         public static final int PIVOT = 11;
         public static final int ROLLER_INTAKE = 12;
@@ -153,7 +154,9 @@ public final class Constants {
     }
 
     public static final class Input {
-        
+        public static final ConstantAxis SWERVE_X_INPUT = new ConstantAxis(0, 0);
+        public static final ConstantAxis SWERVE_Y_INPUT = new ConstantAxis(0, 1);
+        public static final ConstantAxis SWERVE_ROTATION_INPUT = new ConstantAxis(0, 4);
     }
     public static final class Auto {
         public static final double AUTO_INTAKE_TIME = 2;

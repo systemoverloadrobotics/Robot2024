@@ -41,38 +41,42 @@ public class RobotContainer {
   private final SendableChooser<Command> autoSelector;
 
   private final Swerve swerve;
-  private final Pivot pivot;
-  private final Intake intake;
-  private final Climb climb;
+  // private final Pivot pivot;
+  // private final Intake intake;
+  // private final Climb climb;
 
-  private final SwerveDrive swerveDrive;
-  private final ClimbDownCommand climbDownCommand;
-  private final ClimbUpCommand climbUpCommand;
-  private final IntakeClaw intakeClaw;
-  private final OuttakeClaw outtakeClaw;
-  private final MoveToAmpAngle moveToAmpAngle;
-  private final MoveToIntakeAngle moveToIntakeAngle;
-  private final MoveToSpeakerAngle moveToSpeakerAngle;
-  private final MoveToStowAngle moveToStowAngle;
+  // private final ClimbDownCommand climbDownCommand;
+  // private final ClimbUpCommand climbUpCommand;
+  // private final IntakeClaw intakeClaw;
+  // private final OuttakeClaw outtakeClaw;
+  // private final MoveToAmpAngle moveToAmpAngle;
+  // private final MoveToIntakeAngle moveToIntakeAngle;
+  // private final MoveToSpeakerAngle moveToSpeakerAngle;
+  // private final MoveToStowAngle moveToStowAngle;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     swerve = new Swerve();
-    pivot = new Pivot();
-    intake = new Intake();
-    climb = new Climb();
+    // pivot = new Pivot();
+    // intake = new Intake();
+    // climb = new Climb();
 
-    swerveDrive = new SwerveDrive(swerve, null, null, null, null); // TODO: FILL WITH REAL VALUES
-    climbDownCommand = new ClimbDownCommand(climb);
-    climbUpCommand = new ClimbUpCommand(climb);
-    intakeClaw = new IntakeClaw(intake);
-    outtakeClaw = new OuttakeClaw(intake);
-    moveToAmpAngle = new MoveToAmpAngle(pivot);
-    moveToIntakeAngle = new MoveToIntakeAngle(pivot);
-    moveToSpeakerAngle = new MoveToSpeakerAngle(pivot);
-    moveToStowAngle = new MoveToStowAngle(pivot);
-
-    swerve.setDefaultCommand(swerveDrive);
+    swerve.setDefaultCommand(
+      new SwerveDrive(
+        swerve, 
+        () -> -Constants.Input.SWERVE_X_INPUT.get().getAsDouble(), 
+        () -> -Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), 
+        Constants.Input.SWERVE_ROTATION_INPUT.get(), 
+        () -> false)
+      );    
+    // climbDownCommand = new ClimbDownCommand(climb);
+    // climbUpCommand = new ClimbUpCommand(climb);
+    // intakeClaw = new IntakeClaw(intake);
+    // outtakeClaw = new OuttakeClaw(intake);
+    // moveToAmpAngle = new MoveToAmpAngle(pivot);
+    // moveToIntakeAngle = new MoveToIntakeAngle(pivot);
+    // moveToSpeakerAngle = new MoveToSpeakerAngle(pivot);
+    // moveToStowAngle = new MoveToStowAngle(pivot);
 
     // Configure the trigger bindings
     configureBindings();
@@ -81,13 +85,13 @@ public class RobotContainer {
   }
 
   private void configureAuto() {
-    NamedCommands.registerCommand("AutoMoveToIntake", new AutoMoveToIntake(pivot));
-    NamedCommands.registerCommand("AutoIntake", new AutoIntake(intake));
-    NamedCommands.registerCommand("AutoMoveToShoot", new AutoMoveToShoot(pivot));
-    NamedCommands.registerCommand("AutoShoot", new AutoShoot(intake));
+    // NamedCommands.registerCommand("AutoMoveToIntake", new AutoMoveToIntake(pivot));
+    // NamedCommands.registerCommand("AutoIntake", new AutoIntake(intake));
+    // NamedCommands.registerCommand("AutoMoveToShoot", new AutoMoveToShoot(pivot));
+    // NamedCommands.registerCommand("AutoShoot", new AutoShoot(intake));
 
-    autoSelector.addOption("BM2", AutoBuilder.followPath(PathPlannerPath.fromPathFile("BM2")));
-    autoSelector.addOption("BM3", AutoBuilder.followPath(PathPlannerPath.fromPathFile("BM3")));
+    autoSelector.addOption("BM2", AutoBuilder.buildAuto("BM2"));
+    autoSelector.addOption("BM3", AutoBuilder.buildAuto("BM3"));
     SmartDashboard.putData("Auto Selector", autoSelector);
   }
 

@@ -41,13 +41,13 @@ public class Swerve extends SubsystemBase {
         lastIntendedStates = new SwerveModuleState[] {};
 
         frontLeft = new SwerveModule("Front Left", Constants.Motor.SWERVE_FRONT_LEFT_POWER,
-                Constants.Motor.SWERVE_FRONT_LEFT_STEER, 0);
+                Constants.Motor.SWERVE_FRONT_LEFT_STEER, 0, false, false);
         frontRight = new SwerveModule("Front Right", Constants.Motor.SWERVE_FRONT_RIGHT_POWER,
-                Constants.Motor.SWERVE_FRONT_RIGHT_STEER, 0);
+                Constants.Motor.SWERVE_FRONT_RIGHT_STEER, 0, false, false);
         backLeft = new SwerveModule("Back Left", Constants.Motor.SWERVE_BACK_LEFT_POWER,
-                Constants.Motor.SWERVE_BACK_LEFT_STEER, 0);
+                Constants.Motor.SWERVE_BACK_LEFT_STEER, 0, true, false);
         backRight = new SwerveModule("Back Right", Constants.Motor.SWERVE_BACK_RIGHT_POWER,
-                Constants.Motor.SWERVE_BACK_RIGHT_STEER, 0);
+                Constants.Motor.SWERVE_BACK_RIGHT_STEER, 0, true, false);
         gyro.reset();
         gyro.resetDisplacement();
         
@@ -93,6 +93,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void setDrivebaseWheelVectors(ChassisSpeeds chassisSpeeds, boolean forScoring) {
+        // ChassisSpeeds.discretize(chassisSpeeds, 0.02);
         SwerveModuleState[] moduleStates =
                 Constants.RobotDimensions.SWERVE_DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
         if (forScoring) {
@@ -100,12 +101,14 @@ public class Swerve extends SubsystemBase {
         } else {
             SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.Swerve.SWERVE_MAX_SPEED);
         }
+        Logger.recordOutput("SwerveDrive/IntendedStatetws",
+        moduleStates);
         setModuleStates(moduleStates);
     }
 
     public void setDrivebaseWheelVectors(double xSpeed, double ySpeed, double rotationSpeed, boolean fieldOriented, boolean forScoring) {
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, fieldOriented ? getRotation2d() : new Rotation2d());
-       setDrivebaseWheelVectors(chassisSpeeds, forScoring);
+        setDrivebaseWheelVectors(chassisSpeeds, forScoring);
     }
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -138,7 +141,7 @@ public class Swerve extends SubsystemBase {
     // TODO ADJUST ANGLE OFFSET
 
     public Rotation2d getRotation2d() {
-        return Rotation2d.fromDegrees(gyro.getYaw() + 90);
+        return Rotation2d.fromDegrees(gyro.getYaw());
     }
 
     public Pose2d getOdometryPose() {

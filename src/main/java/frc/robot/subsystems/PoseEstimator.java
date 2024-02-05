@@ -29,7 +29,6 @@ public class PoseEstimator extends SubsystemBase {
     this.swerve = swerve;
     this.limelight = limelight;
 
-    //TODO: Figure out initial pose for the pose estimator below.
     poseEstimator = new SwerveDrivePoseEstimator(
       Constants.RobotDimensions.SWERVE_DRIVE_KINEMATICS,
       swerve.getRotation2d(),

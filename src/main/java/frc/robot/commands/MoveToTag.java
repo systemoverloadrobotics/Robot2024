@@ -13,6 +13,7 @@ import frc.robot.subsystems.PoseEstimator;
 import java.util.concurrent.Future;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -26,6 +27,8 @@ public class MoveToTag extends Command {
 
   private final java.util.logging.Logger logger;
   private HolonomicDriveController controller;
+  private Pose2d currentPose;
+  private Pose2d tagPose;
 
   private Future<Trajectory> futureTrajectory;
   private Trajectory trajectory;
@@ -45,6 +48,8 @@ public class MoveToTag extends Command {
     logger = java.util.logging.Logger.getLogger(Swerve.class.getName());
 
     controller = new HolonomicDriveController(Constants.Scoring.X_CONTROLLER, Constants.Scoring.Y_CONTROLLER, Constants.Scoring.THETA_CONTROLLER);
+    currentPose = poseEstimator.getEstimatPose2d();
+    tagPose = new Pose2d();
     addRequirements(poseEstimator, limelight, swerve);
   }
 

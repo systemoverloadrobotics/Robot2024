@@ -18,6 +18,7 @@ import frc.sorutil.motor.MotorConfiguration;
 import frc.sorutil.motor.SensorConfiguration;
 import frc.sorutil.motor.SensorConfiguration.ConnectedSensorType;
 import frc.sorutil.motor.SuController.ControlMode;
+import frc.sorutil.motor.SuController.IdleMode;
 import frc.sorutil.motor.SuSparkMax;
 import org.littletonrobotics.junction.Logger;
 
@@ -29,7 +30,7 @@ public class SwerveModule extends SubsystemBase {
     private SuSparkMax steeringController;
     private final String name;
 
-    public SwerveModule(String name, int powerID, int steerID, double offset) {
+    public SwerveModule(String name, int powerID, int steerID, double offset, boolean invertDrive, boolean invertSteer) {
         this.name = name;
 
         MotorConfiguration powerControllerConfig = new MotorConfiguration();
@@ -37,7 +38,8 @@ public class SwerveModule extends SubsystemBase {
         powerControllerConfig.setPidProfile(Constants.Swerve.POWER_PROFILE);
         powerControllerConfig.setCurrentLimit(Constants.Swerve.SWERVE_POWER_CURRENT_LIMIT);
         powerControllerConfig.setMaxOutput(Constants.Swerve.SWERVE_POWER_MAX_OUTPUT);
-        
+        powerControllerConfig.setIdleMode(IdleMode.COAST);
+        powerControllerConfig.setInverted(invertDrive);
 
         // CHANGE GEAR RATIO: DONE
         SensorConfiguration powerSensorConfig =
@@ -51,6 +53,8 @@ public class SwerveModule extends SubsystemBase {
         steerControllerConfig.setPidProfile(Constants.Swerve.STEER_PROFILE);
         steerControllerConfig.setCurrentLimit(Constants.Swerve.SWERVE_ROTATION_CURRENT_LIMIT);
         steerControllerConfig.setMaxOutput(Constants.Swerve.SWERVE_ROTATION_MAX_OUTPUT);
+        steerControllerConfig.setIdleMode(IdleMode.COAST);
+        steerControllerConfig.setInverted(invertSteer);
 
         SensorConfiguration steerSensorConfig = new SensorConfiguration(
                 new SensorConfiguration.ConnectedSensorSource(4096, 1, ConnectedSensorType.PWM_ENCODER));
@@ -81,7 +85,11 @@ public class SwerveModule extends SubsystemBase {
                 SorMath.speedMetersPerSecondToRevsPerMinute(4, state.speedMetersPerSecond));
         
         steeringController.set(ControlMode.POSITION, state.angle.getDegrees());
+        
         Logger.recordOutput(stateName + "SteerPos", steeringController.outputPosition());
+        Logger.recordOutput(stateName + "SteerWant", state.angle.getDegrees());
+        Logger.recordOutput(stateName + "GoWant", state.speedMetersPerSecond);
+
     }
 
     public SwerveModulePosition getPosition() {

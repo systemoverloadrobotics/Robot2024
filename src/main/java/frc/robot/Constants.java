@@ -21,6 +21,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import frc.sorutil.ConstantAxis;
 import frc.sorutil.motor.PidProfile;
 
 /**
@@ -45,8 +46,8 @@ public final class Constants {
 
     public static final class RobotDimensions {
         // TODO: replace these with actual dimensions
-        public static final double WIDTH = Units.inchesToMeters(30);
-        public static final double LENGTH = Units.inchesToMeters(30);
+        public static final double WIDTH = Units.inchesToMeters(28);
+        public static final double LENGTH = Units.inchesToMeters(28);
 
         public static final double WHEEL_CIRCUMFERENCE = Units.inchesToMeters(4) * Math.PI;
         public static final SwerveDriveKinematics SWERVE_DRIVE_KINEMATICS =
@@ -57,13 +58,22 @@ public final class Constants {
     }
 
     public static final class Climb {
+        // TODO: PLACEHOLDER PID
         public static final PidProfile PID_PROFILE = new PidProfile(0, 0, 0);
         public static final double CLIMB_CURRENT_LIMIT = 40.0;
         public static final double CLIMB_MAX_OUTPUT = 0.5;
     }
+    public static final class Inouttake {
+        // TODO: PLACEHOLDER PID
+        public static final PidProfile PID_PROFILE = new PidProfile(0, 0, 0);
+        public static final double OUTTAKE_CURRENT_LIMIT = 30.0;
+        public static final double OUTTAKE_MAX_OUTPUT = 0.8;
+        public static final double INTAKE_CURRENT_LIMIT = 30.0;
+        public static final double INTAKE_MAX_OUTPUT = 0.8;
+    }
     
     public static final class Vision {
-        // Camera location from the center of the robot
+        // Camera location from the center of the robot TODO: PLACEHOLDERS
         public static final double CAMERA_POSITION_X = 0; // Meters
         public static final double CAMERA_POSITION_Y = 0.5; // Meters
         public static final double CAMERA_POSITION_Z = 0; // Meters
@@ -100,10 +110,26 @@ public final class Constants {
         public static final int SWERVE_BACK_RIGHT_POWER = 7;
         public static final int SWERVE_BACK_RIGHT_STEER = 8;
 
-        public static final int CLIMB_LEFT = 9;
+        public static final int CLIMB_LEFT = 19;
         public static final int CLIMB_RIGHT = 10;
+        public static final int PIVOT = 11;
+        public static final int ROLLER_INTAKE = 12;
+        public static final int ROLLER_RELAY = 13;
+        public static final int ROLLER_OUTTAKE_BOTTOM = 14;
+        public static final int ROLLER_OUTTAKE_TOP = 15;
     }
+  
+    public static final class Pivot {
+        public static final PidProfile PID_PROFILE = new PidProfile(0, 0, 0);
+        public static final double PIVOT_CURRENT_LIMIT = 30;
+        public static final double PIVOT_MAX_OUTPUT = 0.8;
 
+        // TODO: PLACEHOLDERS!
+        public static final double INTAKE_ANGLE = 3.3;
+        public static final double AMP_ANGLE = 4.4;
+        public static final double SPEAKER_ANGLE = 5.5;
+        public static final double STOW_ANGLE = 6.6;
+    }
     public static final class Pneumatics {
         
     }
@@ -135,10 +161,13 @@ public final class Constants {
     }
 
     public static final class Input {
-        
+        public static final ConstantAxis SWERVE_X_INPUT = new ConstantAxis(0, 1);
+        public static final ConstantAxis SWERVE_Y_INPUT = new ConstantAxis(0, 0);
+        public static final ConstantAxis SWERVE_ROTATION_INPUT = new ConstantAxis(0, 4);
     }
     public static final class Auto {
-        
+        public static final double AUTO_INTAKE_TIME = 2;
+        public static final double AUTO_OUTTAKE_TIME = 0.5;
     }
     public static final class PoseEstimation {
         public static final Matrix<N3, N1> POSE_GYRO_STD = VecBuilder.fill(0.1, 0.1, 0.1);

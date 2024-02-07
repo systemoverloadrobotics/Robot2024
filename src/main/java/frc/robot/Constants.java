@@ -158,10 +158,11 @@ public final class Constants {
         public static final double AUTO_SWERVE_MAX_VELOCITY = 4; // Meters per second
         public static final double AUTO_SWERVE_MAX_ACCELERATION = 2.5; // Meters per second
 
+
+        //TODO: Fix PID Values
         public static final PIDController X_CONTROLLER = new PIDController(0, 0, 0);
         public static final PIDController Y_CONTROLLER = new PIDController(0, 0, 0);
-        public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(0.0, 0.0, 0.0,
-            new Constraints(AUTO_SWERVE_MAX_VELOCITY, AUTO_SWERVE_MAX_ACCELERATION));
+        public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(0.0, 0.0, 0.0, new Constraints(AUTO_SWERVE_MAX_VELOCITY, AUTO_SWERVE_MAX_ACCELERATION));
         public static final double TRAJECTORY_SAMPLE_TIME = 0; // seconds
     }
 }

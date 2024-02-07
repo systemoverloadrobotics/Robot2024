@@ -7,7 +7,6 @@ package frc.robot.commands;
 import frc.robot.subsystems.Swerve;
 import frc.robot.Constants;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.PoseEstimator;
 
 import java.util.concurrent.Future;
@@ -21,8 +20,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class MoveToTag extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
-  private final Limelight limelight;
-  private final PoseEstimator poseEstimator;
   private final Swerve swerve;
 
   private final java.util.logging.Logger logger;
@@ -40,17 +37,15 @@ public class MoveToTag extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveToTag(Limelight limelight, PoseEstimator poseEstimator, Swerve swerve) {
-    this.limelight = limelight;
-    this.poseEstimator = poseEstimator;
+  public MoveToTag(Swerve swerve) {
     this.swerve = swerve;
 
     logger = java.util.logging.Logger.getLogger(Swerve.class.getName());
 
     controller = new HolonomicDriveController(Constants.Scoring.X_CONTROLLER, Constants.Scoring.Y_CONTROLLER, Constants.Scoring.THETA_CONTROLLER);
-    currentPose = poseEstimator.getEstimatPose2d();
+    currentPose = PoseEstimator.getEstimatedGlobalPose(PoseEstimator.prevPose2D).map(x -> x.estimatedPose.toPose2d()).orElse(new Pose2d());
     tagPose = new Pose2d();
-    addRequirements(poseEstimator, limelight, swerve);
+    addRequirements(swerve);
   }
 
   // Called when the command is initially scheduled.

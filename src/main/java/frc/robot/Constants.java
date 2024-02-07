@@ -8,11 +8,13 @@ package frc.robot;
 import java.io.IOException;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -73,30 +75,8 @@ public final class Constants {
     }
     
     public static final class Vision {
-        // Camera location from the center of the robot TODO: PLACEHOLDERS
-        public static final double CAMERA_POSITION_X = 0; // Meters
-        public static final double CAMERA_POSITION_Y = 0.5; // Meters
-        public static final double CAMERA_POSITION_Z = 0; // Meters
-        public static final double CAMERA_ROTATION_ROLL = 0; // Radians
-        public static final double CAMERA_ROTATION_PITCH = 0; // Radians
-        public static final double CAMERA_ROTATION_YAW = 0; // Radians
-
-        public static final Translation3d CAMERA_POSITION =
-                new Translation3d(CAMERA_POSITION_X, CAMERA_POSITION_Y, CAMERA_POSITION_Z);
-        public static final Rotation3d CAMERA_ROTATION =
-                new Rotation3d(CAMERA_ROTATION_ROLL, CAMERA_ROTATION_PITCH, CAMERA_ROTATION_YAW);
-
-        public static final AprilTagFieldLayout TAG_FIELD_LAYOUT;
-
-        static {
-            AprilTagFieldLayout temp = null;
-            try {
-                temp = AprilTagFieldLayout.loadFromResource("/edu/wpi/first/apriltag/2023-chargedup.json");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            TAG_FIELD_LAYOUT = temp;
-        }
+        public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+        public static final Transform3d ROBOT_TO_CAM = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center.
     }
 
     public static final class Motor {
@@ -175,7 +155,6 @@ public final class Constants {
     }
 
     public static final class Scoring {
-
         public static final double AUTO_SWERVE_MAX_VELOCITY = 4; // Meters per second
         public static final double AUTO_SWERVE_MAX_ACCELERATION = 2.5; // Meters per second
 

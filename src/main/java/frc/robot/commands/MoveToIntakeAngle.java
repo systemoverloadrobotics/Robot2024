@@ -47,7 +47,7 @@ public class MoveToIntakeAngle extends Command {
     pivot.moveToIntakeAngle();
     double calc = lf.calculate(pivot.pivot.outputPosition());
     
-    if ((calc > Constants.Pivot.INTAKE_ANGLE - .5) && (calc < Constants.Pivot.INTAKE_ANGLE + .5)) {
+    if ((calc > Constants.Pivot.INTAKE_ANGLE - 1) && (calc < Constants.Pivot.INTAKE_ANGLE + 1)) {
       flag = true;
     }
 

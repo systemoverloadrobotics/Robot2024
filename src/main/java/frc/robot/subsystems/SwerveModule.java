@@ -1,14 +1,17 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkFlex;
 // Rev imports
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 // Swerve WPIlib improts
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // Robot Constants Import
 import frc.robot.Constants;
@@ -16,6 +19,7 @@ import frc.robot.Constants;
 import frc.sorutil.SorMath;
 import frc.sorutil.motor.MotorConfiguration;
 import frc.sorutil.motor.SensorConfiguration;
+import frc.sorutil.motor.SuSparkFlex;
 import frc.sorutil.motor.SensorConfiguration.ConnectedSensorType;
 import frc.sorutil.motor.SuController.ControlMode;
 import frc.sorutil.motor.SuController.IdleMode;
@@ -26,7 +30,7 @@ public class SwerveModule extends SubsystemBase {
 
     private java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SwerveModule.class.getName());
     
-    private SuSparkMax powerController;
+    private SuSparkFlex powerController;
     private SuSparkMax steeringController;
     private final String name;
 
@@ -38,13 +42,13 @@ public class SwerveModule extends SubsystemBase {
         powerControllerConfig.setPidProfile(Constants.Swerve.POWER_PROFILE);
         powerControllerConfig.setCurrentLimit(Constants.Swerve.SWERVE_POWER_CURRENT_LIMIT);
         powerControllerConfig.setMaxOutput(Constants.Swerve.SWERVE_POWER_MAX_OUTPUT);
-        powerControllerConfig.setIdleMode(IdleMode.COAST);
+        powerControllerConfig.setIdleMode(IdleMode.BRAKE);
         powerControllerConfig.setInverted(invertDrive);
 
         // CHANGE GEAR RATIO: DONE
         SensorConfiguration powerSensorConfig =
                 new SensorConfiguration(new SensorConfiguration.IntegratedSensorSource(6.12)); // was 6.75
-        powerController = new SuSparkMax(new CANSparkMax(powerID, MotorType.kBrushless), name + " Power",
+        powerController = new SuSparkFlex(new CANSparkFlex(powerID, MotorType.kBrushless), name + " Power",
                 powerControllerConfig, powerSensorConfig);
 
         // Steer Controller configuration
@@ -53,8 +57,11 @@ public class SwerveModule extends SubsystemBase {
         steerControllerConfig.setPidProfile(Constants.Swerve.STEER_PROFILE);
         steerControllerConfig.setCurrentLimit(Constants.Swerve.SWERVE_ROTATION_CURRENT_LIMIT);
         steerControllerConfig.setMaxOutput(Constants.Swerve.SWERVE_ROTATION_MAX_OUTPUT);
-        steerControllerConfig.setIdleMode(IdleMode.COAST);
+        steerControllerConfig.setIdleMode(IdleMode.BRAKE);
         steerControllerConfig.setInverted(invertSteer);
+
+        SmartDashboard.putNumber("kS", 0.16);
+        SmartDashboard.putNumber("kV", 2);
 
         SensorConfiguration steerSensorConfig = new SensorConfiguration(
                 new SensorConfiguration.ConnectedSensorSource(4096, 1, ConnectedSensorType.PWM_ENCODER));
@@ -80,11 +87,15 @@ public class SwerveModule extends SubsystemBase {
     }
 
     public void setState(SwerveModuleState state) {
-        //state = SwerveModuleState.optimize(state, getState().angle);
-        powerController.set(ControlMode.VELOCITY,
-                SorMath.speedMetersPerSecondToRevsPerMinute(4, state.speedMetersPerSecond));
+        state = SwerveModuleState.optimize(state, getState().angle);
+        // powerController.set(ControlMode.VELOCITY,
+        //         SorMath.speedMetersPerSecondToRevsPerMinute(4, state.speedMetersPerSecond));
+        
+        double kS = 0.16;
+        double kV = 2.00;
         
         steeringController.set(ControlMode.POSITION, state.angle.getDegrees());
+        powerController.set(ControlMode.VOLTAGE, Math.signum(state.speedMetersPerSecond) * kS + kV*state.speedMetersPerSecond);
         
         Logger.recordOutput(stateName + "SteerPos", steeringController.outputPosition());
         Logger.recordOutput(stateName + "SteerWant", state.angle.getDegrees());

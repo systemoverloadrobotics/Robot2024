@@ -7,6 +7,7 @@ package frc.robot.commands;
 import frc.robot.Constants;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.Swerve;
 import frc.sorutil.motor.SuController.ControlMode;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class MoveToSpeakerAngle extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final frc.robot.subsystems.Pivot pivot;
+  private final Swerve swerve;
   private LinearFilter lf;
   private boolean flag;
 
@@ -23,9 +25,10 @@ public class MoveToSpeakerAngle extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MoveToSpeakerAngle(frc.robot.subsystems.Pivot subsystem) {
+  public MoveToSpeakerAngle(frc.robot.subsystems.Pivot subsystem, Swerve s) {
     lf = LinearFilter.movingAverage(10);
     pivot = subsystem;
+    swerve = s;
     flag = false;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -41,7 +44,7 @@ public class MoveToSpeakerAngle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pivot.moveToSpeakerAngle();
+    pivot.moveToSpeakerAngle(swerve);
     double calc = lf.calculate(pivot.pivot.outputPosition());
     
     if ((calc > Constants.Pivot.SPEAKER_ANGLE - .5) && (calc < Constants.Pivot.SPEAKER_ANGLE + .5)) {

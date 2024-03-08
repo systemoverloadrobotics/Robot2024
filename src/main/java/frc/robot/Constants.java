@@ -8,13 +8,23 @@ package frc.robot;
 import java.io.IOException;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import frc.sorutil.ConstantAxis;
+import frc.sorutil.ConstantButton;
 import frc.sorutil.motor.PidProfile;
 
 /**
@@ -58,7 +68,7 @@ public final class Constants {
     }
     public static final class Inouttake {
         // TODO: PLACEHOLDER PID
-        public static final PidProfile PID_PROFILE = new PidProfile(0, 0, 0);
+        public static final PidProfile PID_PROFILE = new PidProfile(0.01, 0, 0);
         public static final double OUTTAKE_CURRENT_LIMIT = 30.0;
         public static final double OUTTAKE_MAX_OUTPUT = 0.8;
         public static final double INTAKE_CURRENT_LIMIT = 30.0;
@@ -66,30 +76,8 @@ public final class Constants {
     }
     
     public static final class Vision {
-        // Camera location from the center of the robot TODO: PLACEHOLDERS
-        public static final double CAMERA_POSITION_X = 0; // Meters
-        public static final double CAMERA_POSITION_Y = 0.5; // Meters
-        public static final double CAMERA_POSITION_Z = 0; // Meters
-        public static final double CAMERA_ROTATION_ROLL = 0; // Radians
-        public static final double CAMERA_ROTATION_PITCH = 0; // Radians
-        public static final double CAMERA_ROTATION_YAW = 0; // Radians
-
-        public static final Translation3d CAMERA_POSITION =
-                new Translation3d(CAMERA_POSITION_X, CAMERA_POSITION_Y, CAMERA_POSITION_Z);
-        public static final Rotation3d CAMERA_ROTATION =
-                new Rotation3d(CAMERA_ROTATION_ROLL, CAMERA_ROTATION_PITCH, CAMERA_ROTATION_YAW);
-
-        public static final AprilTagFieldLayout TAG_FIELD_LAYOUT;
-
-        static {
-            AprilTagFieldLayout temp = null;
-            try {
-                temp = AprilTagFieldLayout.loadFromResource("/edu/wpi/first/apriltag/2023-chargedup.json");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            TAG_FIELD_LAYOUT = temp;
-        }
+        public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+        public static final Transform3d ROBOT_TO_CAM = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center.
     }
 
     public static final class Motor {
@@ -103,24 +91,24 @@ public final class Constants {
         public static final int SWERVE_BACK_RIGHT_POWER = 7;
         public static final int SWERVE_BACK_RIGHT_STEER = 8;
 
-        public static final int CLIMB_LEFT = 19;
+        public static final int CLIMB_LEFT = 9;
         public static final int CLIMB_RIGHT = 10;
         public static final int PIVOT = 11;
         public static final int ROLLER_INTAKE = 12;
         public static final int ROLLER_RELAY = 13;
-        public static final int ROLLER_OUTTAKE_BOTTOM = 14;
-        public static final int ROLLER_OUTTAKE_TOP = 15;
+        public static final int ROLLER_OUTTAKE_BOTTOM = 15;
+        public static final int ROLLER_OUTTAKE_TOP = 14;
     }
   
     public static final class Pivot {
-        public static final PidProfile PID_PROFILE = new PidProfile(0, 0, 0);
+        public static final PidProfile PID_PROFILE = new PidProfile(0.04, 0, 0.1);
         public static final double PIVOT_CURRENT_LIMIT = 30;
         public static final double PIVOT_MAX_OUTPUT = 0.8;
 
         // TODO: PLACEHOLDERS!
-        public static final double INTAKE_ANGLE = 3.3;
-        public static final double AMP_ANGLE = 4.4;
-        public static final double SPEAKER_ANGLE = 5.5;
+        public static final double INTAKE_ANGLE = 2;
+        public static final double AMP_ANGLE = 90;
+        public static final double SPEAKER_ANGLE = 13;
         public static final double STOW_ANGLE = 6.6;
     }
     public static final class Pneumatics {
@@ -132,37 +120,61 @@ public final class Constants {
         public static final PidProfile STEER_PROFILE = new PidProfile(0.03, 0, 0.1);
         public static final PidProfile POWER_PROFILE = new PidProfile(0.0002, 0.0, 0);
 
-        public static final double SWERVE_POWER_CURRENT_LIMIT = 60.0;
+        public static final double SWERVE_POWER_CURRENT_LIMIT = 120.0;
         public static final double SWERVE_POWER_MAX_OUTPUT = 0.8;
 
         public static final double SWERVE_ROTATION_CURRENT_LIMIT = 40.0;
         public static final double SWERVE_ROTATION_MAX_OUTPUT = 0.7;
 
         public static final double DISTANCE_PER_REV = Units.inchesToMeters(4 * Math.PI);
-        public static final double NEO_MAX_SPEED = 5820; // RPM the old speed was 5600
+        public static final double NEO_MAX_SPEED = 6784; // RPM the old speed was 5600
         public static final double MAX_WHEEL_SPEED = ((NEO_MAX_SPEED / 60) * DISTANCE_PER_REV);
-        public static final double SWERVE_MAX_SPEED = 5; // m/s, was 6
+        public static final double SWERVE_MAX_SPEED = 5.88; // m/s, was 6
         public static final double SWERVE_MAX_AUTO_SPEED = 0.2 * MAX_WHEEL_SPEED; // m/s
         public static final double SWERVE_MAX_PRECISION_SPEED = 0.1 * MAX_WHEEL_SPEED; // m/s
         public static final double SWERVE_MAX_ACCELERATION = 2; // m/s^2
         public static final double SWERVE_ROTATION_MAX_SPEED = Math.PI * 2; // rad/s
         public static final double SWERVE_ROTATION_MAX_ACCELERATION = Math.PI * 2 / 3; // rads/s^2
 
-        public static final double SWERVE_DEADBAND = 0.05;
-        public static final double SWERVE_ROTATION_TOLERANCE = 5; // degrees
+        public static final double SWERVE_DEADBAND = 0.0575;
+        public static final double SWERVE_ROTATION_TOLERANCE = 3; // degrees
         public static final double SWERVE_SNAPPING_DEADBAND = 0.5; // 50%
     }
 
     public static final class Input {
-        public static final ConstantAxis SWERVE_X_INPUT = new ConstantAxis(0, 1);
-        public static final ConstantAxis SWERVE_Y_INPUT = new ConstantAxis(0, 0);
-        public static final ConstantAxis SWERVE_ROTATION_INPUT = new ConstantAxis(0, 4);
+        public static final ConstantAxis SWERVE_X_INPUT = new ConstantAxis(0, 5);
+        public static final ConstantAxis SWERVE_Y_INPUT = new ConstantAxis(0, 4);
+        public static final ConstantAxis SWERVE_ROTATION_INPUT = new ConstantAxis(0, 0);
+
+        public static final ConstantButton testA = new ConstantButton(0, 1);
+        public static final ConstantButton testB = new ConstantButton(0, 2);
+        public static final ConstantButton testX = new ConstantButton(0, 3);
+        public static final ConstantButton testY = new ConstantButton(0, 4);
+        public static final ConstantButton lBumper = new ConstantButton(0, 5);
+        public static final ConstantButton rBumper = new ConstantButton(0, 6);
+
+        public static final ConstantAxis lTrigger = new ConstantAxis(0, 2);
+        public static final ConstantAxis rTrigger = new ConstantAxis(0, 3);
+
     }
     public static final class Auto {
         public static final double AUTO_INTAKE_TIME = 2;
         public static final double AUTO_OUTTAKE_TIME = 0.5;
     }
     public static final class PoseEstimation {
-        
+        public static final Matrix<N3, N1> POSE_GYRO_STD = VecBuilder.fill(0.1, 0.1, 0.1);
+        public static final Matrix<N3, N1> POSE_VISION_STD = VecBuilder.fill(0.1, 0.1, 0.1);
+    }
+
+    public static final class Scoring {
+        public static final double AUTO_SWERVE_MAX_VELOCITY = 4; // Meters per second
+        public static final double AUTO_SWERVE_MAX_ACCELERATION = 2.5; // Meters per second
+
+
+        //TODO: Fix PID Values
+        public static final PIDController X_CONTROLLER = new PIDController(0, 0, 0);
+        public static final PIDController Y_CONTROLLER = new PIDController(0, 0, 0);
+        public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(0.0, 0.0, 0.0, new Constraints(AUTO_SWERVE_MAX_VELOCITY, AUTO_SWERVE_MAX_ACCELERATION));
+        public static final double TRAJECTORY_SAMPLE_TIME = 0; // seconds
     }
 }

@@ -15,7 +15,8 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
+import frc.robot.assistants.LimelightHelpers;
+import frc.robot.assistants.PoseEstimatorHelper;
 import frc.sorutil.SorMath;
 import frc.sorutil.motor.MotorConfiguration;
 import frc.sorutil.motor.SensorConfiguration;
@@ -84,7 +85,7 @@ public class Pivot extends SubsystemBase {
     goalAngle = new TrapezoidProfile.State(Constants.Pivot.AMP_ANGLE, 0);
   }
   public void moveToSpeakerAngle(Swerve swerve) {
-    goalAngle = new TrapezoidProfile.State(Constants.Pivot.SPEAKER_ANGLE, 0);
+    goalAngle = new TrapezoidProfile.State(PoseEstimatorHelper.angleShootEstimate, 0);
   }
   public void moveToStowAngle() {
     goalAngle = new TrapezoidProfile.State(Constants.Pivot.STOW_ANGLE, 0);
@@ -122,13 +123,8 @@ public class Pivot extends SubsystemBase {
     }
   }
 
-  // x in meters
-
-  public double getAngleNeeded(double x, Swerve swerve) {
-    double ogTx = Units.feetToMeters(15.8);
-    double distMeters = Math.abs(swerve.getOdometryPose().getX() - ogTx);
-    x = Units.metersToFeet(distMeters);
-
+  // x in ft
+  public static double getAngleNeeded(double x) {
     return 7.649 * Math.pow(x, 0.655) + 12.178;
   }
 

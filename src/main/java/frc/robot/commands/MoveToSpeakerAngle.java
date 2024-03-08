@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.Constants;
+import frc.robot.assistants.PoseEstimatorHelper;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Swerve;
@@ -47,7 +48,7 @@ public class MoveToSpeakerAngle extends Command {
     pivot.moveToSpeakerAngle(swerve);
     double calc = lf.calculate(pivot.pivot.outputPosition());
     
-    if ((calc > Constants.Pivot.SPEAKER_ANGLE - .5) && (calc < Constants.Pivot.SPEAKER_ANGLE + .5)) {
+    if ((calc > PoseEstimatorHelper.angleShootEstimate - .5) && (calc < PoseEstimatorHelper.angleShootEstimate + .5)) {
       flag = true;
     }
 

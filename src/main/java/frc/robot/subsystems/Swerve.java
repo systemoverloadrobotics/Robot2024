@@ -15,8 +15,15 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
+import frc.robot.assistants.LimelightHelpers;
+import frc.robot.assistants.PoseEstimatorHelper;
+import frc.robot.assistants.LimelightHelpers.LimelightResults;
+import frc.robot.assistants.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.assistants.LimelightHelpers.Results;
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.logging.Level;
 
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
@@ -39,15 +46,20 @@ public class Swerve extends SubsystemBase {
 
     private Pose2d lastPoseState;
 
-
     private AHRS gyro = new AHRS(SerialPort.Port.kUSB);
     private SwerveDrivePoseEstimator odometry = new SwerveDrivePoseEstimator(
         Constants.RobotDimensions.SWERVE_DRIVE_KINEMATICS,
         new Rotation2d(0),
         new SwerveModulePosition[] {new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()},
         new Pose2d(),
-        VecBuilder.fill(0.01, 0.01, 0.01),
-        VecBuilder.fill(1, 1, Units.degreesToRadians(15))
+        VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+        VecBuilder.fill(0.0334, 0.1391, Units.degreesToRadians(30))
+    );
+
+    private SwerveDriveOdometry odometryReal = new SwerveDriveOdometry(
+        Constants.RobotDimensions.SWERVE_DRIVE_KINEMATICS,
+        new Rotation2d(0),
+        new SwerveModulePosition[] {new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()}
     );
 
     public Swerve() {
@@ -109,7 +121,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void resetPoseWithLimelight() {
-        odometry.resetPosition(getRotation2d(), getModulePositions(), PoseEstimator.getEstimatedGlobalPose(lastPoseState));
+        odometry.resetPosition(getRotation2d(), getModulePositions(), PoseEstimatorHelper.getEstimatedGlobalPose(lastPoseState));
     }
 
     public void setDrivebaseWheelVectors(ChassisSpeeds chassisSpeeds, boolean forScoring) {
@@ -191,18 +203,47 @@ public class Swerve extends SubsystemBase {
         return new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(), backRight.getPosition()};
     }
 
-    @Override
-    public void periodic() {
+    public void updateOdometry() {
         odometry.updateWithTime(Timer.getFPGATimestamp(), gyro.getRotation2d(), getModulePositions());
+        odometryReal.update(gyro.getRotation2d(), getModulePositions()); // pure odometry
         
-        // Odometry Camera
-        Pose2d pose = PoseEstimator.getEstimatedGlobalPose(lastPoseState);
-        if (!(pose.getX() == 0 && pose.getY() == 0 && pose.getRotation().getDegrees() == 0)) {
-            // System.out.println(pose.getX() + " " + pose.getY());
-            odometry.addVisionMeasurement(pose, PoseEstimator.lastTimestamp);
+        LimelightResults result = LimelightHelpers.getLatestResults("limelight-lemon");
+        if (result.error.equals("")) {
+            LimelightTarget_Fiducial[] targets = result.targetingResults.targets_Fiducials;
+            
+            if (Arrays.stream(targets).anyMatch(x -> x.fiducialID == 4 || x.fiducialID == 8)) { // SHOOTER AIM CODE
+                LimelightTarget_Fiducial target = Arrays.stream(targets).filter(x -> x.fiducialID == 4 || x.fiducialID == 8).findFirst().get(); // check if its the shooter area
+                double distance = target.getTargetPose_RobotSpace2D().getTranslation().getNorm(); // Meters
+                PoseEstimatorHelper.angleShootEstimate = Pivot.getAngleNeeded(Units.metersToFeet(distance));
+            }
+
+            if (targets.length > 0) { // if tags viewed
+                double avgDistanceAway = Arrays.stream(targets).mapToDouble(x -> x.getTargetPose_CameraSpace2D().getTranslation().getNorm()).sum();
+                Pose2d poseUpdatedGyro = new Pose2d(result.targetingResults.getBotPose2d_wpiBlue().getTranslation(), gyro.getRotation2d());
+                double timestamp = Timer.getFPGATimestamp() - (result.targetingResults.latency_capture/1000.0) - (result.targetingResults.latency_pipeline/1000.0);
+
+                double stdForVision = PoseEstimatorHelper.visionStdLookup.get(avgDistanceAway / targets.length);
+
+                try {
+                    odometry.addVisionMeasurement(
+                        poseUpdatedGyro, 
+                        timestamp,
+                        VecBuilder.fill(stdForVision, stdForVision, Units.degreesToRadians(360)) // discard angle measurement
+                    );
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, e.toString());
+                }
+            } 
         }
 
         Logger.recordOutput("Odometry", odometry.getEstimatedPosition());
+        Logger.recordOutput("PureOdometry", odometryReal.getPoseMeters());
+    }
+
+    @Override
+    public void periodic() {
+        updateOdometry();
+
         Logger.recordOutput("SwerveDrive/IntendedStates",
                 getModulePositions() == null ? new SwerveModuleState[] {} : getModulePositions());
         Logger.recordOutput("SwerveDrive/GyroscopeHeading", getRotation2d().getDegrees());

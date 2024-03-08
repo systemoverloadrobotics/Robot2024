@@ -124,6 +124,10 @@ public class RobotContainer {
     // Constants.Input.lBumper.get().whileTrue(new SequentialCommandGroup(moveToAmpAngle, new OuttakeClaw(intake, pivot)));
   }
 
+  public void runSwerveOdometry() {
+    swerve.updateOdometry();
+  }
+
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return autoSelector.getSelected();

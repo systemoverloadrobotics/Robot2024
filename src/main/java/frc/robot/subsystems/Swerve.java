@@ -47,6 +47,7 @@ public class Swerve extends SubsystemBase {
     private Pose2d lastPoseState;
 
     private AHRS gyro = new AHRS(SerialPort.Port.kUSB);
+    
     private SwerveDrivePoseEstimator odometry = new SwerveDrivePoseEstimator(
         Constants.RobotDimensions.SWERVE_DRIVE_KINEMATICS,
         new Rotation2d(0),

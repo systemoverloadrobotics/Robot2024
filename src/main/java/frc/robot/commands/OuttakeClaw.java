@@ -6,6 +6,11 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Pivot;
+import frc.sorutil.motor.SuController.ControlMode;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -13,10 +18,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class OuttakeClaw extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Intake intake;
+  private final Pivot hitarth;
   private final LinearFilter lf;
   
-  public OuttakeClaw(Intake subsystem) {
+  public OuttakeClaw(Intake subsystem, Pivot hitarth) {
     intake = subsystem;
+    this.hitarth = hitarth;
     this.lf = LinearFilter.movingAverage(10);
     addRequirements(subsystem);
   }
@@ -28,9 +35,13 @@ public class OuttakeClaw extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double value = lf.calculate(intake.outtakeBottom.outputVelocity());
+    Logger.recordOutput("UTBAE", intake.outtakeBottom.outputVelocity());
+    double value = intake.outtakeBottom.outputVelocity();
     intake.setFlywheels();
-    if (value >= 2900 && value <= 3100) { // TODO: Change Values to Constants
+    if (value >= 4000) { // TODO: Change Values to Constants
+        intake.outtake();
+    }
+    if (value >= 500 && hitarth.angle > 90) { // TODO: Change Values to Constants
         intake.outtake();
     }
   }

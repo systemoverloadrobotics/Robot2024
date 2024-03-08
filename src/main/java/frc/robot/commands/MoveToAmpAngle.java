@@ -24,9 +24,10 @@ public class MoveToAmpAngle extends Command {
    * @param subsystem The subsystem used by this command.
    */
   public MoveToAmpAngle(frc.robot.subsystems.Pivot subsystem) {
+    System.out.println("HI");
     lf = LinearFilter.movingAverage(10);
     pivot = subsystem;
-    flag = true;
+    flag = false;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
@@ -45,7 +46,7 @@ public class MoveToAmpAngle extends Command {
     pivot.moveToAmpAngle();
     double calc = lf.calculate(pivot.pivot.outputPosition());
     
-    if ((calc > Constants.Pivot.AMP_ANGLE - .5) && (calc < Constants.Pivot.AMP_ANGLE + .5)) {
+    if ((calc > Constants.Pivot.AMP_ANGLE - 1) && (calc < Constants.Pivot.AMP_ANGLE + 1)) {
       flag = true;
     }
   }
@@ -59,6 +60,6 @@ public class MoveToAmpAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return flag;
   }
 }

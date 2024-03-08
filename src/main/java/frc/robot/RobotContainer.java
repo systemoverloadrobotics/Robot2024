@@ -30,9 +30,11 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -41,42 +43,47 @@ public class RobotContainer {
   private final SendableChooser<Command> autoSelector;
 
   private final Swerve swerve;
-  // private final Pivot pivot;
-  // private final Intake intake;
+  private final Pivot pivot;
+  private final Intake intake;
   // private final Climb climb;
 
   // private final ClimbDownCommand climbDownCommand;
   // private final ClimbUpCommand climbUpCommand;
-  // private final IntakeClaw intakeClaw;
-  // private final OuttakeClaw outtakeClaw;
-  // private final MoveToAmpAngle moveToAmpAngle;
-  // private final MoveToIntakeAngle moveToIntakeAngle;
-  // private final MoveToSpeakerAngle moveToSpeakerAngle;
+  private final IntakeClaw intakeClaw;
+  private final OuttakeClaw outtakeClaw;
+  private final MoveToAmpAngle moveToAmpAngle;
+  private final MoveToIntakeAngle moveToIntakeAngle;
+  private final Command resetPose2d;
+  private final MoveToSpeakerAngle moveToSpeakerAngle;
   // private final MoveToStowAngle moveToStowAngle;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     swerve = new Swerve();
-    // pivot = new Pivot();
-    // intake = new Intake();
+    pivot = new Pivot();
+    intake = new Intake();
     // climb = new Climb();
 
     swerve.setDefaultCommand(
       new SwerveDrive(
         swerve, 
-        () -> Constants.Input.SWERVE_X_INPUT.get().getAsDouble(), 
-        () -> -Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), 
+        () -> -Constants.Input.SWERVE_X_INPUT.get().getAsDouble(), 
+        () -> Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), 
         () -> -Constants.Input.SWERVE_ROTATION_INPUT.get().getAsDouble(), 
         () -> false)
       );    
+
     // climbDownCommand = new ClimbDownCommand(climb);
     // climbUpCommand = new ClimbUpCommand(climb);
-    // intakeClaw = new IntakeClaw(intake);
-    // outtakeClaw = new OuttakeClaw(intake);
-    // moveToAmpAngle = new MoveToAmpAngle(pivot);
-    // moveToIntakeAngle = new MoveToIntakeAngle(pivot);
-    // moveToSpeakerAngle = new MoveToSpeakerAngle(pivot);
+    intakeClaw = new IntakeClaw(intake);
+    outtakeClaw = new OuttakeClaw(intake, pivot);
+    moveToAmpAngle = new MoveToAmpAngle(pivot);
+    // pivot.setDefaultCommand(moveToAmpAngle);
+    moveToIntakeAngle = new MoveToIntakeAngle(pivot);
+    moveToSpeakerAngle = new MoveToSpeakerAngle(pivot, swerve);
     // moveToStowAngle = new MoveToStowAngle(pivot);
+
+    resetPose2d = new FunctionalCommand(() -> {}, () -> swerve.resetPoseWithLimelight(), (x) -> {}, () -> false, swerve);
 
     // Configure the trigger bindings
     configureBindings();
@@ -105,9 +112,16 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    Constants.Input.testA.get().whileTrue(intakeClaw);
+    Constants.Input.testB.get().whileTrue(outtakeClaw);
+    Constants.Input.testX.get().whileTrue(moveToSpeakerAngle);
+    Constants.Input.testY.get().whileTrue(moveToIntakeAngle);
     
-
-    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    Constants.Input.lBumper.get().whileTrue(resetPose2d);
+    
+    // Constants.Input.rTrigger.getButton().castTo(Trigger::new).whileTrue(new ParallelCommandGroup(intakeClaw, moveToIntakeAngle));
+    // Constants.Input.rBumper.get().whileTrue(new SequentialCommandGroup(moveToSpeakerAngle, new OuttakeClaw(intake, pivot)));
+    // Constants.Input.lBumper.get().whileTrue(new SequentialCommandGroup(moveToAmpAngle, new OuttakeClaw(intake, pivot)));
   }
 
   public Command getAutonomousCommand() {

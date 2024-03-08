@@ -13,6 +13,7 @@ import frc.robot.Constants;
 import frc.sorutil.motor.MotorConfiguration;
 import frc.sorutil.motor.SensorConfiguration;
 import frc.sorutil.motor.SuController.ControlMode;
+import frc.sorutil.motor.SuController.IdleMode;
 import frc.sorutil.motor.SuSparkMax;
 
 public class Intake extends SubsystemBase {
@@ -22,8 +23,6 @@ public class Intake extends SubsystemBase {
   public SuSparkMax outtakeTop;
   public SuSparkMax outtakeBottom;
 
- 
-  
   /** Creates a new ExampleSubsystem. */
   public Intake() {
     MotorConfiguration intakeControllerConfig = new MotorConfiguration();
@@ -39,6 +38,7 @@ public class Intake extends SubsystemBase {
     outtakeControllerConfig.setCurrentLimit(Constants.Inouttake.OUTTAKE_CURRENT_LIMIT);
     outtakeControllerConfig.setMaxOutput(Constants.Inouttake.OUTTAKE_MAX_OUTPUT);
 
+    intakeControllerConfig.setIdleMode(IdleMode.COAST);
     intake = new SuSparkMax(
       new CANSparkMax(Constants.Motor.ROLLER_INTAKE, MotorType.kBrushless), "Intake", intakeControllerConfig, intakeSensorConfig
     );
@@ -56,32 +56,32 @@ public class Intake extends SubsystemBase {
   }
   public void intake() {
     //subject to change
-    intake.set(ControlMode.PERCENT_OUTPUT, 0.2);
+    intake.set(ControlMode.PERCENT_OUTPUT, 0.4);
   }
   public void retraction() {
     relay.set(ControlMode.PERCENT_OUTPUT, -0.04);
   }
 
   public void setFlywheels() {
-    outtakeTop.set(ControlMode.VELOCITY, 3000);
-    outtakeBottom.set(ControlMode.VELOCITY, 3000);
+    outtakeTop.set(ControlMode.VOLTAGE, 11);
+    outtakeBottom.set(ControlMode.VOLTAGE, 11);
     //holds note in place
     intake.set(ControlMode.PERCENT_OUTPUT, 0);
     relay.set(ControlMode.PERCENT_OUTPUT, 0);    
   }
 
   public void outtake() {
-    intake.set(ControlMode.PERCENT_OUTPUT, 0.2);
-    relay.set(ControlMode.PERCENT_OUTPUT, 0.2);    
-    outtakeTop.set(ControlMode.VELOCITY, 3000);
-    outtakeBottom.set(ControlMode.VELOCITY, 3000);
+  intake.set(ControlMode.PERCENT_OUTPUT, 0.6);
+    relay.set(ControlMode.PERCENT_OUTPUT, 0.9);    
+    outtakeTop.set(ControlMode.VOLTAGE, 9);
+    outtakeBottom.set(ControlMode.VOLTAGE, 9);
   }
 
   public void stop(){
     intake.set(ControlMode.PERCENT_OUTPUT, 0);
     relay.set(ControlMode.PERCENT_OUTPUT, 0);    
-    outtakeTop.set(ControlMode.VELOCITY, 0);
-    outtakeBottom.set(ControlMode.VELOCITY, 0);  
+    outtakeTop.set(ControlMode.VOLTAGE, 0);
+    outtakeBottom.set(ControlMode.VOLTAGE, 0);  
   }
 
   public double amperageMotorsIntake() {

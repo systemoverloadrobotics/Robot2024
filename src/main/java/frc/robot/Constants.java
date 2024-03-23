@@ -110,7 +110,7 @@ public final class Constants {
         // TODO: PLACEHOLDERS!
         public static final double INTAKE_ANGLE = 3.5;
         public static final double AMP_ANGLE = 90;
-        public static final double SPEAKER_ANGLE = 13;
+        public static final double SPEAKER_ANGLE = 14;
         public static final double STOW_ANGLE = 25;
     }
     public static final class Pneumatics {

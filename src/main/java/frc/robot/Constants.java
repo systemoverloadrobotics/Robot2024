@@ -104,7 +104,7 @@ public final class Constants {
   
     public static final class Pivot {
         public static final PidProfile PID_PROFILE = new PidProfile(0.04, 0, 0.1);
-        public static final double PIVOT_CURRENT_LIMIT = 45;
+        public static final double PIVOT_CURRENT_LIMIT = 30;
         public static final double PIVOT_MAX_OUTPUT = 0.8;
 
         // TODO: PLACEHOLDERS!
@@ -122,14 +122,14 @@ public final class Constants {
         public static final PidProfile STEER_PROFILE = new PidProfile(0.03, 0, 0.1);
         public static final PidProfile POWER_PROFILE = new PidProfile(0.0002, 0.0, 0);
 
-        public static final double SWERVE_POWER_CURRENT_LIMIT = 80.0;
+        public static final double SWERVE_POWER_CURRENT_LIMIT = 50.0;
         public static final double SWERVE_POWER_MAX_OUTPUT = 0.8;
 
-        public static final double SWERVE_ROTATION_CURRENT_LIMIT = 40.0;
+        public static final double SWERVE_ROTATION_CURRENT_LIMIT = 30.0;
         public static final double SWERVE_ROTATION_MAX_OUTPUT = 0.7;
 
         public static final double DISTANCE_PER_REV = Units.inchesToMeters(4 * Math.PI);
-        public static final double NEO_MAX_SPEED = 6784; // RPM the old speed was 5600
+        public static final double NEO_MAX_SPEED = 5600; // RPM the old speed was 5600
         public static final double MAX_WHEEL_SPEED = ((NEO_MAX_SPEED / 60) * DISTANCE_PER_REV);
         public static final double SWERVE_MAX_SPEED = 5.88; // m/s, was 6
         public static final double SWERVE_MAX_AUTO_SPEED = 0.2 * MAX_WHEEL_SPEED; // m/s
@@ -157,6 +157,11 @@ public final class Constants {
 
         public static final ConstantButton climbup = new ConstantButton(0, 2);
         public static final ConstantButton climbdown = new ConstantButton(0, 3);
+
+        public static final ConstantButton SWERVE_FACE_N = new ConstantButton(0, 0);
+        public static final ConstantButton SWERVE_FACE_E = new ConstantButton(0, 90);
+        public static final ConstantButton SWERVE_FACE_S = new ConstantButton(0, 180);
+        public static final ConstantButton SWERVE_FACE_W = new ConstantButton(0, 270);
     }
     public static final class Auto {
         public static final double AUTO_INTAKE_TIME = 2;

@@ -15,6 +15,7 @@ import frc.robot.commands.MoveToIntakeAngle;
 import frc.robot.commands.MoveToSpeakerAngle;
 import frc.robot.commands.MoveToStowAngle;
 import frc.robot.commands.OuttakeClaw;
+import frc.robot.commands.RotationalSwerveDrive;
 import frc.robot.commands.SpoolClaw;
 import frc.robot.commands.StopClaw;
 import frc.robot.commands.SwerveDrive;
@@ -63,6 +64,11 @@ public class RobotContainer {
   private final MoveToSpeakerAngle moveToSpeakerAngle;
   private final MoveToStowAngle moveToStowAngle;
 
+  private final Command driveFacingN;
+  private final Command driveFacingE;
+  private final Command driveFacingS;
+  private final Command driveFacingW;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     swerve = new Swerve();
@@ -88,6 +94,16 @@ public class RobotContainer {
     moveToIntakeAngle = new MoveToIntakeAngle(pivot);
     moveToSpeakerAngle = new MoveToSpeakerAngle(pivot, swerve);
     moveToStowAngle = new MoveToStowAngle(pivot);
+
+    driveFacingN = new RotationalSwerveDrive(swerve, () -> -Constants.Input.SWERVE_X_INPUT.get().getAsDouble(),
+    () -> -Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> 0, () -> false);
+    driveFacingE = new RotationalSwerveDrive(swerve, () -> -Constants.Input.SWERVE_X_INPUT.get().getAsDouble(),
+    () -> -Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> 90, () -> false);
+    driveFacingS = new RotationalSwerveDrive(swerve, () -> -Constants.Input.SWERVE_X_INPUT.get().getAsDouble(),
+    () -> -Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> 180, () -> false);
+    driveFacingW = new RotationalSwerveDrive(swerve, () -> -Constants.Input.SWERVE_X_INPUT.get().getAsDouble(),
+    () -> -Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> 270, () -> false);
+
 
     // resetPose2d = new FunctionalCommand(() -> {}, () -> swerve.resetPoseWithLimelight(), (x) -> {}, () -> false, swerve);
 
@@ -156,6 +172,11 @@ public class RobotContainer {
     Constants.Input.speaker.get().whileTrue(moveToSpeakerAngle).onTrue(new SpoolClaw(intake, pivot));
     Constants.Input.amp.get().whileTrue(moveToAmpAngle).onTrue(new StopClaw(intake, pivot));
     Constants.Input.intake.get().whileTrue(moveToIntakeAngle).onTrue(new IntakeClaw(intake));
+
+    Constants.Input.SWERVE_FACE_N.getPOV().whileTrue(driveFacingN);
+    Constants.Input.SWERVE_FACE_E.getPOV().whileTrue(driveFacingE);
+    Constants.Input.SWERVE_FACE_S.getPOV().whileTrue(driveFacingS);
+    Constants.Input.SWERVE_FACE_W.getPOV().whileTrue(driveFacingW);
     
     //Constants.Input.climbup.get().whileTrue(climbUpCommand);
     //Constants.Input.climbdown.get().whileTrue(climbDownCommand);

@@ -52,10 +52,10 @@ public class RobotContainer {
   private final Swerve swerve;
   private final Pivot pivot;
   private final Intake intake;
-  //private final Climb climb;
+  private final Climb climb;
 
-  // private final ClimbDownCommand climbDownCommand;
-  // private final ClimbUpCommand climbUpCommand;
+  private final ClimbDownCommand climbDownCommand;
+  private final ClimbUpCommand climbUpCommand;
   private final IntakeClaw intakeClaw;
   private final OuttakeClaw outtakeClaw;
   private final MoveToAmpAngle moveToAmpAngle;
@@ -74,19 +74,19 @@ public class RobotContainer {
     swerve = new Swerve();
     pivot = new Pivot();
     intake = new Intake();
-    // climb = new Climb();
+    climb = new Climb();
 
     swerve.setDefaultCommand(
       new SwerveDrive(
         swerve, 
         () -> -Constants.Input.SWERVE_X_INPUT.get().getAsDouble(), 
         () -> Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), 
-        () -> -Constants.Input.SWERVE_ROTATION_INPUT.get().getAsDouble(), 
+        () -> Constants.Input.SWERVE_ROTATION_INPUT.get().getAsDouble(), 
         () -> false)
       );    
 
-    //climbDownCommand = new ClimbDownCommand(climb);
-    //climbUpCommand = new ClimbUpCommand(climb);
+    climbDownCommand = new ClimbDownCommand(climb);
+    climbUpCommand = new ClimbUpCommand(climb);
     intakeClaw = new IntakeClaw(intake);
     outtakeClaw = new OuttakeClaw(intake, pivot);
     moveToAmpAngle = new MoveToAmpAngle(pivot);
@@ -178,8 +178,8 @@ public class RobotContainer {
     Constants.Input.SWERVE_FACE_S.getPOV().whileTrue(driveFacingS);
     Constants.Input.SWERVE_FACE_W.getPOV().whileTrue(driveFacingW);
     
-    //Constants.Input.climbup.get().whileTrue(climbUpCommand);
-    //Constants.Input.climbdown.get().whileTrue(climbDownCommand);
+    Constants.Input.climbup.get().whileTrue(climbUpCommand);
+    Constants.Input.climbdown.get().whileTrue(climbDownCommand);
     
     // Constants.Input.lBumper.get().whileTrue(resetPose2d);
     

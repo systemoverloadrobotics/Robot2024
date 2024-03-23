@@ -15,6 +15,7 @@ import frc.sorutil.motor.MotorConfiguration;
 import frc.sorutil.motor.SensorConfiguration;
 import frc.sorutil.motor.SensorConfiguration.ConnectedSensorType;
 import frc.sorutil.motor.SuController.ControlMode;
+import frc.sorutil.motor.SuController.IdleMode;
 import frc.sorutil.motor.SuSparkMax;
 
 public class Climb extends SubsystemBase {
@@ -28,6 +29,8 @@ public class Climb extends SubsystemBase {
     climberControllerConfig.setPidProfile(Constants.Climb.PID_PROFILE);
     climberControllerConfig.setCurrentLimit(Constants.Climb.CLIMB_CURRENT_LIMIT);
     climberControllerConfig.setMaxOutput(Constants.Climb.CLIMB_MAX_OUTPUT);
+    
+    climberControllerConfig.setIdleMode(IdleMode.BRAKE); // set to brake mode
     
     climberLeft = new SuSparkMax(
       new CANSparkMax(Constants.Motor.ACTUAL_CLIMB_LEFT, MotorType.kBrushless), "Climber Left", climberControllerConfig, climberSensorConfig

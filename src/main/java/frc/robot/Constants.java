@@ -155,8 +155,8 @@ public final class Constants {
         public static final ConstantButton intake = new ConstantButton(1, 10);
         public static final ConstantButton amp = new ConstantButton(1, 8);
 
-        public static final ConstantButton climbup = new ConstantButton(0, 2);
-        public static final ConstantButton climbdown = new ConstantButton(0, 3);
+        public static final ConstantButton climbup = new ConstantButton(1, 11);
+        public static final ConstantButton climbdown = new ConstantButton(1, 9);
 
         public static final ConstantButton SWERVE_FACE_N = new ConstantButton(0, 0);
         public static final ConstantButton SWERVE_FACE_E = new ConstantButton(0, 90);

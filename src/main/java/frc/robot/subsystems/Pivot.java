@@ -46,7 +46,7 @@ public class Pivot extends SubsystemBase {
     pivotControllerConfig.setPidProfile(Constants.Pivot.PID_PROFILE);
     pivotControllerConfig.setCurrentLimit(Constants.Pivot.PIVOT_CURRENT_LIMIT);
     pivotControllerConfig.setMaxOutput(Constants.Pivot.PIVOT_MAX_OUTPUT);
-    pivotControllerConfig.setIdleMode(IdleMode.BRAKE);
+    pivotControllerConfig.setIdleMode(IdleMode.COAST);
     pivotControllerConfig.setInverted(true);
 
     pivot = new SuSparkMax(

@@ -39,7 +39,7 @@ public class Pivot extends SubsystemBase {
 
   public Pivot() {
     SmartDashboard.putNumber("thevelocitything idk", 0);
-    e = new DutyCycleEncoder(0);
+    e = new DutyCycleEncoder(9);
     MotorConfiguration pivotControllerConfig = new MotorConfiguration();
     SensorConfiguration pivotSensorConfig = new SensorConfiguration(new SensorConfiguration.IntegratedSensorSource(216));
 
@@ -85,10 +85,17 @@ public class Pivot extends SubsystemBase {
     goalAngle = new TrapezoidProfile.State(Constants.Pivot.AMP_ANGLE, 0);
   }
   public void moveToSpeakerAngle(Swerve swerve) {
-    goalAngle = new TrapezoidProfile.State(PoseEstimatorHelper.angleShootEstimate, 0);
+    goalAngle = new TrapezoidProfile.State(Constants.Pivot.SPEAKER_ANGLE, 0);
+  }
+  public void moveToSpeakerAngle() {
+    goalAngle = new TrapezoidProfile.State(Constants.Pivot.SPEAKER_ANGLE, 0);
   }
   public void moveToStowAngle() {
     goalAngle = new TrapezoidProfile.State(Constants.Pivot.STOW_ANGLE, 0);
+  }
+
+  public void moveToAngle(double inputAngle) {
+    goalAngle = new TrapezoidProfile.State(inputAngle, 0);
   }
   
 

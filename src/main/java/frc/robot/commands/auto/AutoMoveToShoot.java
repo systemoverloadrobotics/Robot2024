@@ -39,12 +39,8 @@ public class AutoMoveToShoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pivot.moveToIntakeAngle();
+    pivot.moveToSpeakerAngle();
     double calc = lf.calculate(pivot.pivot.outputPosition());
-    
-    if ((calc > Constants.Pivot.SPEAKER_ANGLE - .5) && (calc < Constants.Pivot.SPEAKER_ANGLE + .5)) {
-      end(true);
-    }
   }
 
   // Called once the command ends or is interrupted.

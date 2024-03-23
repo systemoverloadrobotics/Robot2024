@@ -4,38 +4,46 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Pivot;
+import frc.sorutil.motor.SuController.ControlMode;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class ClimbDownCommand extends Command {
+/** An example command that uses an example subsystem. */
+public class StopClaw extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Climb climb;
+  private final Intake intake;
+  private final Pivot hitarth;
   private final LinearFilter lf;
-
-  public ClimbDownCommand(Climb climb) {
-    this.climb = climb;
+  
+  public StopClaw(Intake subsystem, Pivot hitarth) {
+    intake = subsystem;
+    this.hitarth = hitarth;
     this.lf = LinearFilter.movingAverage(10);
-
-    addRequirements(climb);
+    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    climb.down();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climb.down();
+    Logger.recordOutput("UTBAE", intake.outtakeBottom.outputVelocity());
+    intake.stop();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    intake.stop();
+  }
 
   // Returns true when the command should end.
   @Override

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.commands.AutonSwerveDrive;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ClimbDownCommand;
 import frc.robot.commands.ClimbUpCommand;
@@ -14,10 +15,13 @@ import frc.robot.commands.MoveToIntakeAngle;
 import frc.robot.commands.MoveToSpeakerAngle;
 import frc.robot.commands.MoveToStowAngle;
 import frc.robot.commands.OuttakeClaw;
+import frc.robot.commands.SpoolClaw;
+import frc.robot.commands.StopClaw;
 import frc.robot.commands.SwerveDrive;
 import frc.robot.commands.auto.AutoIntake;
 import frc.robot.commands.auto.AutoMoveToIntake;
 import frc.robot.commands.auto.AutoMoveToShoot;
+import frc.robot.commands.auto.AutoMoveToShootSpecific;
 import frc.robot.commands.auto.AutoShoot;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -35,6 +39,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -45,7 +51,7 @@ public class RobotContainer {
   private final Swerve swerve;
   private final Pivot pivot;
   private final Intake intake;
-  // private final Climb climb;
+  //private final Climb climb;
 
   // private final ClimbDownCommand climbDownCommand;
   // private final ClimbUpCommand climbUpCommand;
@@ -53,9 +59,9 @@ public class RobotContainer {
   private final OuttakeClaw outtakeClaw;
   private final MoveToAmpAngle moveToAmpAngle;
   private final MoveToIntakeAngle moveToIntakeAngle;
-  private final Command resetPose2d;
+  // private final Command resetPose2d;
   private final MoveToSpeakerAngle moveToSpeakerAngle;
-  // private final MoveToStowAngle moveToStowAngle;
+  private final MoveToStowAngle moveToStowAngle;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -67,23 +73,23 @@ public class RobotContainer {
     swerve.setDefaultCommand(
       new SwerveDrive(
         swerve, 
-        () -> -Constants.Input.SWERVE_X_INPUT.get().getAsDouble(), 
-        () -> Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), 
+        () -> Constants.Input.SWERVE_X_INPUT.get().getAsDouble(), 
+        () -> -Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), 
         () -> -Constants.Input.SWERVE_ROTATION_INPUT.get().getAsDouble(), 
         () -> false)
       );    
 
-    // climbDownCommand = new ClimbDownCommand(climb);
-    // climbUpCommand = new ClimbUpCommand(climb);
+    //climbDownCommand = new ClimbDownCommand(climb);
+    //climbUpCommand = new ClimbUpCommand(climb);
     intakeClaw = new IntakeClaw(intake);
     outtakeClaw = new OuttakeClaw(intake, pivot);
     moveToAmpAngle = new MoveToAmpAngle(pivot);
     // pivot.setDefaultCommand(moveToAmpAngle);
     moveToIntakeAngle = new MoveToIntakeAngle(pivot);
     moveToSpeakerAngle = new MoveToSpeakerAngle(pivot, swerve);
-    // moveToStowAngle = new MoveToStowAngle(pivot);
+    moveToStowAngle = new MoveToStowAngle(pivot);
 
-    resetPose2d = new FunctionalCommand(() -> {}, () -> swerve.resetPoseWithLimelight(), (x) -> {}, () -> false, swerve);
+    // resetPose2d = new FunctionalCommand(() -> {}, () -> swerve.resetPoseWithLimelight(), (x) -> {}, () -> false, swerve);
 
     // Configure the trigger bindings
     configureBindings();
@@ -97,8 +103,40 @@ public class RobotContainer {
     // NamedCommands.registerCommand("AutoMoveToShoot", new AutoMoveToShoot(pivot));
     // NamedCommands.registerCommand("AutoShoot", new AutoShoot(intake));
 
-    autoSelector.addOption("BM2", AutoBuilder.buildAuto("BM2"));
-    autoSelector.addOption("BM3", AutoBuilder.buildAuto("BM3"));
+    // autoSelector.addOption("BM2", AutoBuilder.buildAuto("BM2"));
+    // autoSelector.addOption("BM3", AutoBuilder.buildAuto("BM3"));
+
+    autoSelector.addOption("TAXI", new AutonSwerveDrive(swerve, () -> 0, () -> 1.5, () -> 0, () -> false).withTimeout(2)); // 2s
+    autoSelector.addOption("1P_TAXI", new SequentialCommandGroup( // 5s
+      new AutoMoveToShoot(pivot).withTimeout(1),
+      new AutoShoot(intake).withTimeout(2),
+      new AutonSwerveDrive(swerve, () -> 1.5, () -> 0, () -> 0, () -> false).withTimeout(2)
+    ));
+    autoSelector.addOption("1P", new SequentialCommandGroup( // 3s
+      new AutoMoveToShoot(pivot).withTimeout(1),
+      new AutoShoot(intake).withTimeout(2)
+    ));
+    autoSelector.addOption("2P", new SequentialCommandGroup( // 12s
+      new AutoMoveToShoot(pivot).withTimeout(1),
+      new AutoShoot(intake).withTimeout(2),
+      new AutoMoveToIntake(pivot).withTimeout(1),
+      new ParallelCommandGroup(new AutoIntake(intake), new AutonSwerveDrive(swerve, () -> 0.9, () -> 0, () -> 0, () -> false)).withTimeout(2),
+      new AutonSwerveDrive(swerve, () -> -0.9, () -> 0, () -> 0, () -> false).withTimeout(2),
+      new AutoShoot(intake).withTimeout(2),
+      new AutonSwerveDrive(swerve, () -> 1.5, () -> 0, () -> 0, () -> false).withTimeout(2)
+    ));
+    autoSelector.addOption("3P_CENTER_RIGHT", new SequentialCommandGroup( // 14s
+      new AutoMoveToShoot(pivot).withTimeout(1), // rotate arm to speaker angle
+      new AutoShoot(intake).withTimeout(2), // shoot preloaded piece
+      new ParallelCommandGroup(new AutoMoveToIntake(pivot), new AutoIntake(intake), new AutonSwerveDrive(swerve, () -> 1.8, () -> 0, () -> 0, () -> false)).withTimeout(1), // rotate arm to intake angle, move 1.8 meters forward while running ground intake
+      new AutoMoveToShootSpecific(pivot, 47.3).withTimeout(1), // rotate arm to speaker angle accounting for 1.8 meters away
+      new AutoShoot(intake).withTimeout(2), // shoot from 1.8 meters away
+      new ParallelCommandGroup(new AutoMoveToIntake(pivot), new AutoIntake(intake), new AutonSwerveDrive(swerve, () -> -0.9, () -> 0, ()-> -Math.PI / 4, () -> false)).withTimeout(2), // rotate arm to intake angle, rotate bot -90 degrees and move to third piece while running ground intake
+      new AutonSwerveDrive(swerve, () -> 0, () -> 0, () -> Math.PI / 4, () -> false).withTimeout(2), // rotate bot 90 degrees
+      new AutoMoveToShootSpecific(pivot, 47.3).withTimeout(1), // rotate arm to speaker angle accounting for 1.8 meters away
+      new AutoShoot(intake).withTimeout(2) // shoot piece
+    ));
+    
     SmartDashboard.putData("Auto Selector", autoSelector);
   }
 
@@ -112,12 +150,17 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    Constants.Input.testA.get().whileTrue(intakeClaw);
-    Constants.Input.testB.get().whileTrue(outtakeClaw);
-    Constants.Input.testX.get().whileTrue(moveToSpeakerAngle);
-    Constants.Input.testY.get().whileTrue(moveToIntakeAngle);
+    Constants.Input.shoot.get().whileTrue(outtakeClaw);
+
+    Constants.Input.stow.get().whileTrue(moveToStowAngle).onTrue(new StopClaw(intake, pivot));
+    Constants.Input.speaker.get().whileTrue(moveToSpeakerAngle).onTrue(new SpoolClaw(intake, pivot));
+    Constants.Input.amp.get().whileTrue(moveToAmpAngle).onTrue(new StopClaw(intake, pivot));
+    Constants.Input.intake.get().whileTrue(moveToIntakeAngle).onTrue(new IntakeClaw(intake));
     
-    Constants.Input.lBumper.get().whileTrue(resetPose2d);
+    //Constants.Input.climbup.get().whileTrue(climbUpCommand);
+    //Constants.Input.climbdown.get().whileTrue(climbDownCommand);
+    
+    // Constants.Input.lBumper.get().whileTrue(resetPose2d);
     
     // Constants.Input.rTrigger.getButton().castTo(Trigger::new).whileTrue(new ParallelCommandGroup(intakeClaw, moveToIntakeAngle));
     // Constants.Input.rBumper.get().whileTrue(new SequentialCommandGroup(moveToSpeakerAngle, new OuttakeClaw(intake, pivot)));

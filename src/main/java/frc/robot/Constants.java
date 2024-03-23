@@ -63,8 +63,8 @@ public final class Constants {
     public static final class Climb {
         // TODO: PLACEHOLDER PID
         public static final PidProfile PID_PROFILE = new PidProfile(0, 0, 0);
-        public static final double CLIMB_CURRENT_LIMIT = 40.0;
-        public static final double CLIMB_MAX_OUTPUT = 0.5;
+        public static final double CLIMB_CURRENT_LIMIT = 60.0;
+        public static final double CLIMB_MAX_OUTPUT = 0.4;
     }
     public static final class Inouttake {
         // TODO: PLACEHOLDER PID
@@ -93,23 +93,25 @@ public final class Constants {
 
         public static final int CLIMB_LEFT = 9;
         public static final int CLIMB_RIGHT = 10;
-        public static final int PIVOT = 11;
         public static final int ROLLER_INTAKE = 12;
         public static final int ROLLER_RELAY = 13;
         public static final int ROLLER_OUTTAKE_BOTTOM = 15;
         public static final int ROLLER_OUTTAKE_TOP = 14;
+
+        public static final int ACTUAL_CLIMB_LEFT = 16;
+        public static final int ACTUAL_CLIMB_RIGHT = 17;
     }
   
     public static final class Pivot {
         public static final PidProfile PID_PROFILE = new PidProfile(0.04, 0, 0.1);
-        public static final double PIVOT_CURRENT_LIMIT = 30;
+        public static final double PIVOT_CURRENT_LIMIT = 45;
         public static final double PIVOT_MAX_OUTPUT = 0.8;
 
         // TODO: PLACEHOLDERS!
-        public static final double INTAKE_ANGLE = 2;
+        public static final double INTAKE_ANGLE = 3.5;
         public static final double AMP_ANGLE = 90;
         public static final double SPEAKER_ANGLE = 13;
-        public static final double STOW_ANGLE = 6.6;
+        public static final double STOW_ANGLE = 25;
     }
     public static final class Pneumatics {
         
@@ -120,7 +122,7 @@ public final class Constants {
         public static final PidProfile STEER_PROFILE = new PidProfile(0.03, 0, 0.1);
         public static final PidProfile POWER_PROFILE = new PidProfile(0.0002, 0.0, 0);
 
-        public static final double SWERVE_POWER_CURRENT_LIMIT = 120.0;
+        public static final double SWERVE_POWER_CURRENT_LIMIT = 80.0;
         public static final double SWERVE_POWER_MAX_OUTPUT = 0.8;
 
         public static final double SWERVE_ROTATION_CURRENT_LIMIT = 40.0;
@@ -142,20 +144,19 @@ public final class Constants {
     }
 
     public static final class Input {
-        public static final ConstantAxis SWERVE_X_INPUT = new ConstantAxis(0, 5);
-        public static final ConstantAxis SWERVE_Y_INPUT = new ConstantAxis(0, 4);
-        public static final ConstantAxis SWERVE_ROTATION_INPUT = new ConstantAxis(0, 0);
+        public static final ConstantAxis SWERVE_X_INPUT = new ConstantAxis(0, 1);
+        public static final ConstantAxis SWERVE_Y_INPUT = new ConstantAxis(0, 0);
+        public static final ConstantAxis SWERVE_ROTATION_INPUT = new ConstantAxis(0, 4);
 
-        public static final ConstantButton testA = new ConstantButton(0, 1);
-        public static final ConstantButton testB = new ConstantButton(0, 2);
-        public static final ConstantButton testX = new ConstantButton(0, 3);
-        public static final ConstantButton testY = new ConstantButton(0, 4);
-        public static final ConstantButton lBumper = new ConstantButton(0, 5);
-        public static final ConstantButton rBumper = new ConstantButton(0, 6);
+        public static final ConstantButton shoot = new ConstantButton(0, 6);
 
-        public static final ConstantAxis lTrigger = new ConstantAxis(0, 2);
-        public static final ConstantAxis rTrigger = new ConstantAxis(0, 3);
+        public static final ConstantButton stow = new ConstantButton(1, 6);
+        public static final ConstantButton speaker = new ConstantButton(1, 5);
+        public static final ConstantButton intake = new ConstantButton(1, 10);
+        public static final ConstantButton amp = new ConstantButton(1, 8);
 
+        public static final ConstantButton climbup = new ConstantButton(0, 2);
+        public static final ConstantButton climbdown = new ConstantButton(0, 3);
     }
     public static final class Auto {
         public static final double AUTO_INTAKE_TIME = 2;

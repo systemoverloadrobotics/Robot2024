@@ -5,52 +5,53 @@
 package frc.robot.commands.auto;
 
 import frc.robot.Constants;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Pivot;
 import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class AutoShoot extends Command {
+public class AutoMoveToShootSpecific extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Intake intake;
-  private final LinearFilter lf;
-  private boolean flag;
-  private double flagDelayStart;
-  
-  public AutoShoot(Intake subsystem) {
-    intake = subsystem;
-    flag = false;
-    this.lf = LinearFilter.movingAverage(20);
+  private final Pivot pivot;
+  private double inputAngle;
+
+  private LinearFilter lf;
+  /**
+   * Creates a new ExampleCommand.
+   *
+   * @param subsystem The subsystem used by this command.
+   */
+  public AutoMoveToShootSpecific(Pivot subsystem, double inputAngle) {
+    lf = LinearFilter.movingAverage(20);
+    pivot = subsystem;
+    this.inputAngle = inputAngle;
+    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double value = lf.calculate(intake.outtakeBottom.outputVelocity());
-    System.out.println("her");
-    intake.setFlywheels();
-    if (value >= 2900 && value <= 3100) {
-        intake.outtake();
-        flag = true;
-        flagDelayStart = Timer.getFPGATimestamp();
-    }
+    pivot.moveToAngle(inputAngle);
+    double calc = lf.calculate(pivot.pivot.outputPosition());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stop();
+
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return flag && Timer.getFPGATimestamp() - flagDelayStart > Constants.Auto.AUTO_OUTTAKE_TIME;
+    return false;
   }
 }

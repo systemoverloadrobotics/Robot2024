@@ -30,21 +30,21 @@ public class Climb extends SubsystemBase {
     climberControllerConfig.setMaxOutput(Constants.Climb.CLIMB_MAX_OUTPUT);
     
     climberLeft = new SuSparkMax(
-      new CANSparkMax(Constants.Motor.CLIMB_LEFT, MotorType.kBrushless), "Climber Left", climberControllerConfig, climberSensorConfig
+      new CANSparkMax(Constants.Motor.ACTUAL_CLIMB_LEFT, MotorType.kBrushless), "Climber Left", climberControllerConfig, climberSensorConfig
     );
     climberRight = new SuSparkMax(
-      new CANSparkMax(Constants.Motor.CLIMB_RIGHT, MotorType.kBrushless), "Climber Right", climberControllerConfig, climberSensorConfig
+      new CANSparkMax(Constants.Motor.ACTUAL_CLIMB_RIGHT, MotorType.kBrushless), "Climber Right", climberControllerConfig, climberSensorConfig
     );
   }
 
   public void up() {
-    climberLeft.set(ControlMode.PERCENT_OUTPUT, -0.2);
-    climberRight.set(ControlMode.PERCENT_OUTPUT, -0.2);
+    climberLeft.set(ControlMode.PERCENT_OUTPUT, 0.8);
+    climberRight.set(ControlMode.PERCENT_OUTPUT, 0.8);
   }
 
   public void down() {
-    climberLeft.set(ControlMode.PERCENT_OUTPUT, 0.2);
-    climberRight.set(ControlMode.PERCENT_OUTPUT, 0.2);
+    climberLeft.set(ControlMode.PERCENT_OUTPUT, -0.8);
+    climberRight.set(ControlMode.PERCENT_OUTPUT, -0.8);
   }
 
   public void stop() {

@@ -48,7 +48,7 @@ public class MoveToSpeakerAngle extends Command {
     pivot.moveToSpeakerAngle(swerve);
     double calc = lf.calculate(pivot.pivot.outputPosition());
     
-    if ((calc > PoseEstimatorHelper.angleShootEstimate - .5) && (calc < PoseEstimatorHelper.angleShootEstimate + .5)) {
+    if ((calc > Constants.Pivot.SPEAKER_ANGLE - .5) && (calc < Constants.Pivot.SPEAKER_ANGLE + .5)) {
       flag = true;
     }
 

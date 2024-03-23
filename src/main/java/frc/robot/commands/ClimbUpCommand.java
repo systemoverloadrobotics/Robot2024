@@ -25,16 +25,12 @@ public class ClimbUpCommand extends Command {
   @Override
   public void initialize() {
     climb.up();
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (lf.calculate(climb.amperageMotors()) > 10) {
-      climb.stop();
-      end(true);
-    }
+    climb.up();
   }
 
   // Called once the command ends or is interrupted.

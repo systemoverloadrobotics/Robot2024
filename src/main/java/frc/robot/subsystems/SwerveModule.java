@@ -30,7 +30,7 @@ public class SwerveModule extends SubsystemBase {
 
     private java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SwerveModule.class.getName());
     
-    private SuSparkFlex powerController;
+    private SuSparkMax powerController;
     private SuSparkMax steeringController;
     private final String name;
 
@@ -48,7 +48,7 @@ public class SwerveModule extends SubsystemBase {
         // CHANGE GEAR RATIO: DONE
         SensorConfiguration powerSensorConfig =
                 new SensorConfiguration(new SensorConfiguration.IntegratedSensorSource(6.12)); // was 6.75
-        powerController = new SuSparkFlex(new CANSparkFlex(powerID, MotorType.kBrushless), name + " Power",
+        powerController = new SuSparkMax(new CANSparkMax(powerID, MotorType.kBrushless), name + " Power",
                 powerControllerConfig, powerSensorConfig);
 
         // Steer Controller configuration
@@ -72,6 +72,10 @@ public class SwerveModule extends SubsystemBase {
         ((CANSparkMax) steeringController.rawController()).getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle)
                 .setZeroOffset(offset);
 
+        ((CANSparkMax) steeringController.rawController()).burnFlash();
+        ((CANSparkMax) powerController.rawController()).burnFlash();
+
+
         stateName = "Swerve/" + name.replace(" ", "") + "/ModuleState";
 
         logger.info("\tModule " + name + " Initialized.");
@@ -92,7 +96,7 @@ public class SwerveModule extends SubsystemBase {
         //         SorMath.speedMetersPerSecondToRevsPerMinute(4, state.speedMetersPerSecond));
         
         double kS = 0.16;
-        double kV = 2.00;
+        double kV = 2.28;
         
         steeringController.set(ControlMode.POSITION, state.angle.getDegrees());
         powerController.set(ControlMode.VOLTAGE, Math.signum(state.speedMetersPerSecond) * kS + kV*state.speedMetersPerSecond);

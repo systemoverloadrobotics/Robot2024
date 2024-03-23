@@ -121,7 +121,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void resetPoseWithLimelight() {
-        odometry.resetPosition(getRotation2d(), getModulePositions(), PoseEstimatorHelper.getEstimatedGlobalPose(lastPoseState));
+        // odometry.resetPosition(getRotation2d(), getModulePositions(), PoseEstimatorHelper.getEstimatedGlobalPose(lastPoseState));
     }
 
     public void setDrivebaseWheelVectors(ChassisSpeeds chassisSpeeds, boolean forScoring) {
@@ -208,7 +208,7 @@ public class Swerve extends SubsystemBase {
         odometryReal.update(gyro.getRotation2d(), getModulePositions()); // pure odometry
         
         LimelightResults result = LimelightHelpers.getLatestResults("limelight-lemon");
-        if (result.error.equals("")) {
+        if (result.error.equals("")) { // CHECK FOR VALIDITY
             LimelightTarget_Fiducial[] targets = result.targetingResults.targets_Fiducials;
             
             if (Arrays.stream(targets).anyMatch(x -> x.fiducialID == 4 || x.fiducialID == 8)) { // SHOOTER AIM CODE
@@ -242,7 +242,7 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic() {
-        updateOdometry();
+        // updateOdometry();
 
         Logger.recordOutput("SwerveDrive/IntendedStates",
                 getModulePositions() == null ? new SwerveModuleState[] {} : getModulePositions());

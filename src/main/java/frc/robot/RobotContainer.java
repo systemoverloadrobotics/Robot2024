@@ -40,6 +40,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -96,13 +97,13 @@ public class RobotContainer {
     moveToStowAngle = new MoveToStowAngle(pivot);
 
     driveFacingN = new RotationalSwerveDrive(swerve, () -> -Constants.Input.SWERVE_X_INPUT.get().getAsDouble(),
-    () -> -Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> 0, () -> false);
+    () -> Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> 0, () -> false);
     driveFacingE = new RotationalSwerveDrive(swerve, () -> -Constants.Input.SWERVE_X_INPUT.get().getAsDouble(),
-    () -> -Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> 90, () -> false);
+    () -> Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> 90, () -> false);
     driveFacingS = new RotationalSwerveDrive(swerve, () -> -Constants.Input.SWERVE_X_INPUT.get().getAsDouble(),
-    () -> -Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> 180, () -> false);
+    () -> Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> 180, () -> false);
     driveFacingW = new RotationalSwerveDrive(swerve, () -> -Constants.Input.SWERVE_X_INPUT.get().getAsDouble(),
-    () -> -Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> 270, () -> false);
+    () -> Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> 270, () -> false);
 
 
     // resetPose2d = new FunctionalCommand(() -> {}, () -> swerve.resetPoseWithLimelight(), (x) -> {}, () -> false, swerve);
@@ -126,11 +127,21 @@ public class RobotContainer {
     autoSelector.addOption("1P_TAXI", new SequentialCommandGroup( // 5s
       new AutoMoveToShoot(pivot).withTimeout(1),
       new AutoShoot(intake).withTimeout(2),
-      new AutonSwerveDrive(swerve, () -> 1.5, () -> 0, () -> 0, () -> false).withTimeout(2)
+      new RotationalSwerveDrive(swerve, () -> 0, () -> 0, () -> 0, () -> false).withTimeout(1)
+    ));
+    autoSelector.addOption("1P_L", new SequentialCommandGroup( // 3s
+      new AutoMoveToShoot(pivot).withTimeout(1),
+      new AutoShoot(intake).withTimeout(2),
+      new InstantCommand(() -> swerve.resetGyro(-45), swerve)
     ));
     autoSelector.addOption("1P", new SequentialCommandGroup( // 3s
       new AutoMoveToShoot(pivot).withTimeout(1),
       new AutoShoot(intake).withTimeout(2)
+    ));
+    autoSelector.addOption("1P_R", new SequentialCommandGroup( // 3s
+      new AutoMoveToShoot(pivot).withTimeout(1),
+      new AutoShoot(intake).withTimeout(2),
+      new InstantCommand(() -> swerve.resetGyro(45), swerve)
     ));
     autoSelector.addOption("2P", new SequentialCommandGroup( // 12s
       new AutoMoveToShoot(pivot).withTimeout(1),
@@ -167,7 +178,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     Constants.Input.shoot.get().whileTrue(outtakeClaw);
-
+    Constants.Input.reverseIntake.get().whileTrue(new FunctionalCommand(() -> {}, () -> intake.intakeReversed(), (x) -> {}, () -> false, intake));
     Constants.Input.stow.get().whileTrue(moveToStowAngle).onTrue(new StopClaw(intake, pivot));
     Constants.Input.speaker.get().whileTrue(moveToSpeakerAngle).onTrue(new SpoolClaw(intake, pivot));
     Constants.Input.amp.get().whileTrue(moveToAmpAngle).onTrue(new StopClaw(intake, pivot));

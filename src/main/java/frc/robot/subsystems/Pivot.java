@@ -31,7 +31,7 @@ public class Pivot extends SubsystemBase {
   public DutyCycleEncoder e;
   public double angle; // degrees
 
-  private final TrapezoidProfile.Constraints constraintsAngle = new TrapezoidProfile.Constraints(360, 720);
+  private final TrapezoidProfile.Constraints constraintsAngle = new TrapezoidProfile.Constraints(270, 720);
 
   private TrapezoidProfile.State goalAngle;
   private TrapezoidProfile.State currentAngle;
@@ -39,7 +39,7 @@ public class Pivot extends SubsystemBase {
 
   public Pivot() {
     SmartDashboard.putNumber("thevelocitything idk", 0);
-    e = new DutyCycleEncoder(9);
+    e = new DutyCycleEncoder(0);
     MotorConfiguration pivotControllerConfig = new MotorConfiguration();
     SensorConfiguration pivotSensorConfig = new SensorConfiguration(new SensorConfiguration.IntegratedSensorSource(216));
 
@@ -110,8 +110,10 @@ public class Pivot extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    Logger.recordOutput("Pivot/AngleRaw", e.get());
-    Logger.recordOutput("Pivot/Angle", 80 * e.get());
+    Logger.recordOutput("Pivot/AngleRawLeft", pivot.outputPosition());
+    Logger.recordOutput("Pivot/AngleRawRight", pivotB.outputPosition());
+
+    if (((CANSparkMax) pivot.rawController()).getIdleMode().equals(com.revrobotics.CANSparkBase.IdleMode.kCoast)) ((CANSparkMax) pivot.rawController()).setIdleMode(com.revrobotics.CANSparkBase.IdleMode.kBrake);
 
     // goalAngle = new TrapezoidProfile.State(SmartDashboard.getNumber("thevelocitything idk", 0), 0);
     TrapezoidProfile profile = new TrapezoidProfile(constraintsAngle, goalAngle, angleSetpoint);
@@ -120,7 +122,7 @@ public class Pivot extends SubsystemBase {
     // SmartDashboard.getNumber("thevelocitything idk", 0) | goalAngle.position
     double o = goalAngle.position;
     angle = o;
-    if (Math.abs(pivot.outputPosition() - o) < 0) {
+    if (false) { // Math.abs(pivot.outputPosition() - o) < 0
       pivot.stop();
       pivotB.stop();
     }

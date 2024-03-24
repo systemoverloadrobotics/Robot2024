@@ -171,6 +171,10 @@ public class Swerve extends SubsystemBase {
 
     // TODO ADJUST ANGLE OFFSET
 
+    public void resetGyro(double angle) {
+        gyro.setAngleAdjustment(angle);
+    }
+
     public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(gyro.getYaw());
     }

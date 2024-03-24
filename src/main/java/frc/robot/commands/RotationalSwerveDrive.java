@@ -22,7 +22,7 @@ public class RotationalSwerveDrive extends Command {
     protected final DoubleSupplier xSupplier, ySupplier, rotationPositionSupplier;
     protected final BooleanSupplier lockSupplier;
 
-    private final ProfiledPIDController angleController = new ProfiledPIDController(0.5, 0, 0.025, new TrapezoidProfile.Constraints(2*Math.PI, 2*Math.PI));
+    private final ProfiledPIDController angleController = new ProfiledPIDController(0.5, 0, 0.025, new TrapezoidProfile.Constraints(3600, 3600));
 
     public RotationalSwerveDrive(Swerve swerve, DoubleSupplier xSupplier, DoubleSupplier ySupplier,
             DoubleSupplier rotationPositionSupplier, BooleanSupplier lockSupplier) {
@@ -69,14 +69,14 @@ public class RotationalSwerveDrive extends Command {
     }
 
     protected void executeLogging(double xSpeed, double ySpeed, double rotationSpeed) {
-        Logger.recordOutput("SwerveDrive/xSpeed", xSpeed);
-        Logger.recordOutput("SwerveDrive/ySpeed", ySpeed);
-        Logger.recordOutput("SwerveDrive/inputX", xSupplier.getAsDouble());
-        Logger.recordOutput("SwerveDrive/inputY", ySupplier.getAsDouble());
+        Logger.recordOutput("RSwerveDrive/xSpeed", xSpeed);
+        Logger.recordOutput("RSwerveDrive/ySpeed", ySpeed);
+        Logger.recordOutput("RSwerveDrive/inputX", xSupplier.getAsDouble());
+        Logger.recordOutput("RSwerveDrive/inputY", ySupplier.getAsDouble());
     //    Logger.getInstance().recordOutput("SwerveDrive/inputR", rotationSupplier.getAsDouble());
-        SmartDashboard.putNumber("rspeed", rotationSpeed);
-        SmartDashboard.putNumber("rotation 2d", swerve.getRotation2d().getDegrees());
-        Logger.recordOutput("SwerveDrive/rotation", swerve.getRotation2d().getDegrees());
+        SmartDashboard.putNumber("RRRRrspeed", rotationSpeed);
+        SmartDashboard.putNumber("RRRRrotation 2d", swerve.getRotation2d().getDegrees());
+        Logger.recordOutput("RSwerveDrive/rotation", swerve.getRotation2d().getDegrees());
     }
 
     // Called once when the command ends or is interrupted.

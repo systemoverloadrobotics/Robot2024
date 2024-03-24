@@ -105,7 +105,7 @@ public final class Constants {
     public static final class Pivot {
         public static final PidProfile PID_PROFILE = new PidProfile(0.04, 0, 0.1);
         public static final double PIVOT_CURRENT_LIMIT = 30;
-        public static final double PIVOT_MAX_OUTPUT = 0.8;
+        public static final double PIVOT_MAX_OUTPUT = 0.5;
 
         // TODO: PLACEHOLDERS!
         public static final double INTAKE_ANGLE = 3.5;
@@ -154,6 +154,7 @@ public final class Constants {
         public static final ConstantButton speaker = new ConstantButton(1, 5);
         public static final ConstantButton intake = new ConstantButton(1, 10);
         public static final ConstantButton amp = new ConstantButton(1, 8);
+        public static final ConstantButton reverseIntake = new ConstantButton(1, 3);
 
         public static final ConstantButton climbup = new ConstantButton(1, 11);
         public static final ConstantButton climbdown = new ConstantButton(1, 9);

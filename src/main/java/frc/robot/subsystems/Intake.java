@@ -71,10 +71,15 @@ public class Intake extends SubsystemBase {
   }
 
   public void outtake() {
-  intake.set(ControlMode.PERCENT_OUTPUT, 0.6);
+    intake.set(ControlMode.PERCENT_OUTPUT, 0.6);
     relay.set(ControlMode.PERCENT_OUTPUT, 0.9);    
     outtakeTop.set(ControlMode.VOLTAGE, 9);
     outtakeBottom.set(ControlMode.VOLTAGE, 9);
+  }
+
+  public void intakeReversed() {
+    intake.set(ControlMode.PERCENT_OUTPUT, -0.9);
+    relay.set(ControlMode.PERCENT_OUTPUT, -0.9);    
   }
 
   public void stop(){

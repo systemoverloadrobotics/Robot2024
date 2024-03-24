@@ -30,7 +30,7 @@ public class Climb extends SubsystemBase {
     climberControllerConfig.setCurrentLimit(Constants.Climb.CLIMB_CURRENT_LIMIT);
     climberControllerConfig.setMaxOutput(Constants.Climb.CLIMB_MAX_OUTPUT);
     
-    climberControllerConfig.setIdleMode(IdleMode.BRAKE); // set to brake mode
+    climberControllerConfig.setIdleMode(IdleMode.BRAKE);// set to brake mode
     
     climberLeft = new SuSparkMax(
       new CANSparkMax(Constants.Motor.ACTUAL_CLIMB_LEFT, MotorType.kBrushless), "Climber Left", climberControllerConfig, climberSensorConfig
@@ -41,13 +41,13 @@ public class Climb extends SubsystemBase {
   }
 
   public void up() {
-    climberLeft.set(ControlMode.PERCENT_OUTPUT, 0.8);
-    climberRight.set(ControlMode.PERCENT_OUTPUT, 0.8);
+    climberLeft.set(ControlMode.PERCENT_OUTPUT, 0.5);
+    climberRight.set(ControlMode.PERCENT_OUTPUT, 0.5);
   }
 
   public void down() {
-    climberLeft.set(ControlMode.PERCENT_OUTPUT, -0.8);
-    climberRight.set(ControlMode.PERCENT_OUTPUT, -0.8);
+    climberLeft.set(ControlMode.PERCENT_OUTPUT, -0.5);
+    climberRight.set(ControlMode.PERCENT_OUTPUT, -0.5);
   }
 
   public void stop() {

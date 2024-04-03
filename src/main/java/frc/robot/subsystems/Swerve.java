@@ -64,7 +64,10 @@ public class Swerve extends SubsystemBase {
 
     public Swerve() {
         logger = java.util.logging.Logger.getLogger(Swerve.class.getName());
-        lastIntendedStates = new SwerveModuleState[] {};
+        this.lastIntendedStates = new SwerveModuleState[] {new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+                new SwerveModuleState(0, Rotation2d.fromDegrees(0))};
 
         frontLeft = new SwerveModule("Front Left", Constants.Motor.SWERVE_FRONT_LEFT_POWER,
                 Constants.Motor.SWERVE_FRONT_LEFT_STEER, 0, true, false);
@@ -85,11 +88,11 @@ public class Swerve extends SubsystemBase {
                 this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (x) -> this.setDrivebaseWheelVectors(x, false), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(10.0, 0.0, 0.0), // Translation PID constants
                         new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-                        4, // Max module speed, in m/s
+                        Constants.Swerve.MAX_WHEEL_SPEED, // Max module speed, in m/s
                         0.3556 * Math.sqrt(2), // Drive base radius in meters. Distance from robot center to furthest module.
-                        new ReplanningConfig() // Default path replanning config. See the API for the options here
+                        new ReplanningConfig(false, false) // Default path replanning config. See the API for the options here
                 ),
                 () -> {
                     // Boolean supplier that controls when the path will be mirrored for the red alliance
@@ -126,21 +129,16 @@ public class Swerve extends SubsystemBase {
 
     public void setDrivebaseWheelVectors(ChassisSpeeds chassisSpeeds, boolean forScoring) {
         ChassisSpeeds.discretize(chassisSpeeds, 0.02);
-        SwerveModuleState[] moduleStates =
-                Constants.RobotDimensions.SWERVE_DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
-        if (forScoring) {
-            SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.Swerve.SWERVE_MAX_AUTO_SPEED);
-        } else {
-            SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.Swerve.SWERVE_MAX_SPEED);
-        }
-        Logger.recordOutput("SwerveDrive/IntendedStatetws", moduleStates);
+        SwerveModuleState[] moduleStates = Constants.RobotDimensions.SWERVE_DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.Swerve.SWERVE_MAX_SPEED);
+        Logger.recordOutput("SwerveDrive/IntendedStates", moduleStates);
         setModuleStates(moduleStates);
     }
 
     public void setDrivebaseWheelVectors(double xSpeed, double ySpeed, double rotationSpeed, boolean fieldOriented, boolean forScoring) {
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, fieldOriented ? getRotation2d() : new Rotation2d());
         setDrivebaseWheelVectors(chassisSpeeds, forScoring);
-    }
+    }  
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         lastIntendedStates = desiredStates;
@@ -180,11 +178,11 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getOdometryPose() {
-        return odometry.getEstimatedPosition();
+        return odometryReal.getPoseMeters();
     }
 
     public void resetOdometryPose(Pose2d pose) {
-        odometry.resetPosition(getRotation2d(), getModulePositions(), pose);
+        odometryReal.resetPosition(getRotation2d(), getModulePositions(), pose);
     }
 
     public double getPitch() {
@@ -247,6 +245,12 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         // updateOdometry();
+
+        odometryReal.update(gyro.getRotation2d(), getModulePositions()); // pure odometry
+        odometry.updateWithTime(Timer.getFPGATimestamp(), gyro.getRotation2d(), getModulePositions());
+        Logger.recordOutput("PureOdometry", odometryReal.getPoseMeters());
+        Logger.recordOutput("Odo", odometry.getEstimatedPosition());
+
 
         Logger.recordOutput("SwerveDrive/IntendedStates",
                 getModulePositions() == null ? new SwerveModuleState[] {} : getModulePositions());

@@ -15,7 +15,7 @@ import frc.robot.subsystems.Swerve;
 import frc.sorutil.SorMath;
 
 
-public class RotationalSwerveDrive extends Command {
+public class RotationalAutonSwerveDrive extends Command {
     protected final Swerve swerve;
     protected SlewRateLimiter xLimiter, yLimiter, rotationLimiter;
 
@@ -24,7 +24,7 @@ public class RotationalSwerveDrive extends Command {
 
     private final ProfiledPIDController angleController = new ProfiledPIDController(5, 0, 0, new TrapezoidProfile.Constraints(1.5, 3));
 
-    public RotationalSwerveDrive(Swerve swerve, DoubleSupplier xSupplier, DoubleSupplier ySupplier,
+    public RotationalAutonSwerveDrive(Swerve swerve, DoubleSupplier xSupplier, DoubleSupplier ySupplier,
             DoubleSupplier rotationPositionSupplier, BooleanSupplier lockSupplier) {
         this.swerve = swerve;
         this.xSupplier = xSupplier;
@@ -37,7 +37,7 @@ public class RotationalSwerveDrive extends Command {
         rotationLimiter = new SlewRateLimiter(Constants.Swerve.SWERVE_ROTATION_MAX_SPEED);
 
         angleController.setTolerance(Constants.Swerve.SWERVE_ROTATION_TOLERANCE);
-        angleController.enableContinuousInput(0, Math.PI * 2);
+        angleController.enableContinuousInput(0, Math.PI * 2f);
 
         addRequirements(swerve);
     }
@@ -60,10 +60,10 @@ public class RotationalSwerveDrive extends Command {
         }
         Logger.recordOutput("Hi", 1);
         // get joystick inputs and clean/scale them
-        double xSpeed = cleanAndScaleInput(xSupplier.getAsDouble(), xLimiter, Constants.Swerve.SWERVE_MAX_SPEED);
-        double ySpeed = cleanAndScaleInput(ySupplier.getAsDouble(), yLimiter, Constants.Swerve.SWERVE_MAX_SPEED);
-        double rotationSpeed = angleController.calculate(swerve.getRotation2d().getRadians(), rotationPositionSupplier.getAsDouble());
-
+        double xSpeed = xSupplier.getAsDouble();
+        double ySpeed = ySupplier.getAsDouble();
+        double rotationSpeed = angleController.calculate(swerve.getRotation2d().getRadians(), rotationPositionSupplier.getAsDouble()) * 2;
+        
         swerve.setDrivebaseWheelVectors(xSpeed, ySpeed, rotationSpeed, true, false);
         executeLogging(xSpeed, ySpeed, rotationSpeed);
     }

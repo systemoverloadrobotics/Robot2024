@@ -104,11 +104,11 @@ public final class Constants {
   
     public static final class Pivot {
         public static final PidProfile PID_PROFILE = new PidProfile(0.04, 0, 0.1);
-        public static final double PIVOT_CURRENT_LIMIT = 30;
-        public static final double PIVOT_MAX_OUTPUT = 0.5;
+        public static final double PIVOT_CURRENT_LIMIT = 45;
+        public static final double PIVOT_MAX_OUTPUT = 0.7;
 
         // TODO: PLACEHOLDERS!
-        public static final double INTAKE_ANGLE = 3.5;
+        public static final double INTAKE_ANGLE = 2;
         public static final double AMP_ANGLE = 90;
         public static final double SPEAKER_ANGLE = 15;
         public static final double STOW_ANGLE = 25;
@@ -129,10 +129,9 @@ public final class Constants {
         public static final double SWERVE_ROTATION_MAX_OUTPUT = 0.7;
 
         public static final double DISTANCE_PER_REV = Units.inchesToMeters(4 * Math.PI);
-        public static final double NEO_MAX_SPEED = 5600; // RPM the old speed was 5600
+        public static final double NEO_MAX_SPEED = 5676; // RPM the old speed was 5600
         public static final double MAX_WHEEL_SPEED = ((NEO_MAX_SPEED / 60) * DISTANCE_PER_REV);
-        public static final double SWERVE_MAX_SPEED = 5.88; // m/s, was 6
-        public static final double SWERVE_MAX_AUTO_SPEED = 0.2 * MAX_WHEEL_SPEED; // m/s
+        public static final double SWERVE_MAX_SPEED = 5.05968; // m/s, was 6
         public static final double SWERVE_MAX_PRECISION_SPEED = 0.1 * MAX_WHEEL_SPEED; // m/s
         public static final double SWERVE_MAX_ACCELERATION = 2; // m/s^2
         public static final double SWERVE_ROTATION_MAX_SPEED = Math.PI * 2; // rad/s
@@ -150,14 +149,14 @@ public final class Constants {
 
         public static final ConstantButton shoot = new ConstantButton(0, 6);
 
-        public static final ConstantButton stow = new ConstantButton(1, 6);
-        public static final ConstantButton speaker = new ConstantButton(1, 5);
-        public static final ConstantButton intake = new ConstantButton(1, 10);
-        public static final ConstantButton amp = new ConstantButton(1, 8);
-        public static final ConstantButton reverseIntake = new ConstantButton(1, 3);
+        public static final ConstantButton stow = new ConstantButton(2, 4);
+        public static final ConstantButton speaker = new ConstantButton(2, 6);
+        public static final ConstantButton intake = new ConstantButton(2, 1);
+        public static final ConstantButton amp = new ConstantButton(2, 5);
+        public static final ConstantButton reverseIntake = new ConstantButton(2, 2);
 
-        public static final ConstantButton climbup = new ConstantButton(1, 11);
-        public static final ConstantButton climbdown = new ConstantButton(1, 9);
+        public static final ConstantButton climbup = new ConstantButton(2, 8);
+        public static final ConstantButton climbdown = new ConstantButton(2, 7);
 
         public static final ConstantButton SWERVE_FACE_N = new ConstantButton(0, 0);
         public static final ConstantButton SWERVE_FACE_E = new ConstantButton(0, 90);

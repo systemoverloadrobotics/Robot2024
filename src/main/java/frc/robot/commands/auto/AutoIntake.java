@@ -41,6 +41,6 @@ public class AutoIntake extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Timer.getFPGATimestamp() - startTime >= Constants.Auto.AUTO_INTAKE_TIME;
+    return false;
   }
 }

@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -56,7 +58,7 @@ public class Intake extends SubsystemBase {
   }
   public void intake() {
     //subject to change
-    intake.set(ControlMode.PERCENT_OUTPUT, 0.4);
+    intake.set(ControlMode.PERCENT_OUTPUT, 1);
   }
   public void retraction() {
     relay.set(ControlMode.PERCENT_OUTPUT, -0.04);
@@ -101,7 +103,13 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    // This method will be called once per scheduler run\
+    if (outtakeBottom.outputVelocity() > 3900) {
+      new XboxController(0).setRumble(RumbleType.kBothRumble, 1);
+    }
+    else {
+      new XboxController(0).setRumble(RumbleType.kBothRumble, 0);
+    }
   }
 
   @Override

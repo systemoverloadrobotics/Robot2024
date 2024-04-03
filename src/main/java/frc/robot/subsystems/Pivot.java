@@ -39,9 +39,12 @@ public class Pivot extends SubsystemBase {
 
   public Pivot() {
     SmartDashboard.putNumber("thevelocitything idk", 0);
-    e = new DutyCycleEncoder(0);
+    e = new DutyCycleEncoder(6);
+    e.setPositionOffset(0.064);
+
     MotorConfiguration pivotControllerConfig = new MotorConfiguration();
     SensorConfiguration pivotSensorConfig = new SensorConfiguration(new SensorConfiguration.IntegratedSensorSource(216));
+    // SensorConfiguration pivotSensorConfig = new SensorConfiguration(new SensorConfiguration.ExternalSensorSource(new SensorConfiguration.RevAbsolute(e, true), 1f/360f));
 
     pivotControllerConfig.setPidProfile(Constants.Pivot.PID_PROFILE);
     pivotControllerConfig.setCurrentLimit(Constants.Pivot.PIVOT_CURRENT_LIMIT);
@@ -57,8 +60,8 @@ public class Pivot extends SubsystemBase {
       new CANSparkMax(Constants.Motor.CLIMB_RIGHT, MotorType.kBrushless), "Climber Right", pivotControllerConfig, pivotSensorConfig
     );
 
-    ((CANSparkMax) pivot.rawController()).setClosedLoopRampRate(2);
-    ((CANSparkMax) pivotB.rawController()).setClosedLoopRampRate(2);
+    ((CANSparkMax) pivot.rawController()).setClosedLoopRampRate(1);
+    ((CANSparkMax) pivotB.rawController()).setClosedLoopRampRate(1);
 
     resetPivot();
   }
@@ -68,8 +71,8 @@ public class Pivot extends SubsystemBase {
     goalAngle = new TrapezoidProfile.State(pivot.outputPosition(), 0);
     currentAngle = new TrapezoidProfile.State(pivot.outputPosition(), 0);
 
-    e.setPositionOffset(0);
-    pivot.setSensorPosition(0);
+    pivot.setSensorPosition(e.get() * 360f * -1);
+    pivotB.setSensorPosition(e.get() * 360f * -1);
   }
 
   // TODO: ADD FEED FORWARD
@@ -110,10 +113,13 @@ public class Pivot extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    Logger.recordOutput("Pivot/AngleRawLeft", pivot.outputPosition());
-    Logger.recordOutput("Pivot/AngleRawRight", pivotB.outputPosition());
+    Logger.recordOutput("Pivot/AngleRaw", pivot.outputPosition());
+    Logger.recordOutput("Pivot/AnglePivot", e.get());
 
-    if (((CANSparkMax) pivot.rawController()).getIdleMode().equals(com.revrobotics.CANSparkBase.IdleMode.kCoast)) ((CANSparkMax) pivot.rawController()).setIdleMode(com.revrobotics.CANSparkBase.IdleMode.kBrake);
+    // if (pivot.outputPosition() < 30) {
+    //   pivot.setSensorPosition(e.get() * 360f * -1);
+    //   pivotB.setSensorPosition(e.get() * 360f * -1);
+    // } 
 
     // goalAngle = new TrapezoidProfile.State(SmartDashboard.getNumber("thevelocitything idk", 0), 0);
     TrapezoidProfile profile = new TrapezoidProfile(constraintsAngle, goalAngle, angleSetpoint);
@@ -127,8 +133,8 @@ public class Pivot extends SubsystemBase {
       pivotB.stop();
     }
     else {
-      pivot.set(ControlMode.POSITION, o, 0.54 * Math.cos(Math.toRadians(80 * e.get())));
-      pivotB.set(ControlMode.POSITION, o, 0.54 * Math.cos(Math.toRadians(80 * e.get())));
+      pivot.set(ControlMode.POSITION, o, 0.54 * Math.cos(Math.toRadians(360 * e.get())));
+      pivotB.set(ControlMode.POSITION, o, 0.54 * Math.cos(Math.toRadians(360 * e.get())));
     }
   }
 

@@ -15,6 +15,7 @@ import frc.robot.commands.MoveToIntakeAngle;
 import frc.robot.commands.MoveToSpeakerAngle;
 import frc.robot.commands.MoveToStowAngle;
 import frc.robot.commands.OuttakeClaw;
+import frc.robot.commands.RotationalAutonSwerveDrive;
 import frc.robot.commands.RotationalSwerveDrive;
 import frc.robot.commands.SpoolClaw;
 import frc.robot.commands.StopClaw;
@@ -23,7 +24,9 @@ import frc.robot.commands.auto.AutoIntake;
 import frc.robot.commands.auto.AutoMoveToIntake;
 import frc.robot.commands.auto.AutoMoveToShoot;
 import frc.robot.commands.auto.AutoMoveToShootSpecific;
+import frc.robot.commands.auto.AutoResetGyroAuto;
 import frc.robot.commands.auto.AutoShoot;
+import frc.robot.commands.auto.AutoSpool;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
@@ -99,11 +102,11 @@ public class RobotContainer {
     driveFacingN = new RotationalSwerveDrive(swerve, () -> -Constants.Input.SWERVE_X_INPUT.get().getAsDouble(),
     () -> Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> 0, () -> false);
     driveFacingE = new RotationalSwerveDrive(swerve, () -> -Constants.Input.SWERVE_X_INPUT.get().getAsDouble(),
-    () -> Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> 90, () -> false);
+    () -> Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> Math.PI/2f, () -> false);
     driveFacingS = new RotationalSwerveDrive(swerve, () -> -Constants.Input.SWERVE_X_INPUT.get().getAsDouble(),
-    () -> Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> 180, () -> false);
+    () -> Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> Math.PI, () -> false);
     driveFacingW = new RotationalSwerveDrive(swerve, () -> -Constants.Input.SWERVE_X_INPUT.get().getAsDouble(),
-    () -> Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> 270, () -> false);
+    () -> Constants.Input.SWERVE_Y_INPUT.get().getAsDouble(), () -> Math.PI * 3f / 2f, () -> false);
 
 
     // resetPose2d = new FunctionalCommand(() -> {}, () -> swerve.resetPoseWithLimelight(), (x) -> {}, () -> false, swerve);
@@ -123,46 +126,75 @@ public class RobotContainer {
     // autoSelector.addOption("BM2", AutoBuilder.buildAuto("BM2"));
     // autoSelector.addOption("BM3", AutoBuilder.buildAuto("BM3"));
 
-    autoSelector.addOption("TAXI", new AutonSwerveDrive(swerve, () -> 0, () -> 1.5, () -> 0, () -> false).withTimeout(2)); // 2s
+    autoSelector.addOption("TAXI", new SequentialCommandGroup(new AutoMoveToShoot(pivot).withTimeout(0.5), new RotationalAutonSwerveDrive(swerve, () -> 1.5, () -> 0, () -> 0, () -> false).withTimeout(2))); // 2s
     autoSelector.addOption("1P_TAXI", new SequentialCommandGroup( // 5s
       new AutoMoveToShoot(pivot).withTimeout(1),
-      new AutoShoot(intake).withTimeout(2),
-      new RotationalSwerveDrive(swerve, () -> 0, () -> 0, () -> 0, () -> false).withTimeout(1)
-    ));
-    autoSelector.addOption("1P_L", new SequentialCommandGroup( // 3s
-      new AutoMoveToShoot(pivot).withTimeout(1),
-      new AutoShoot(intake).withTimeout(2),
-      new InstantCommand(() -> swerve.resetGyro(-45), swerve)
+      new AutoShoot(intake).withTimeout(2.5),
+      new AutonSwerveDrive(swerve, () -> 1.5, () -> 0, () -> 0, () -> false).withTimeout(2)
     ));
     autoSelector.addOption("1P", new SequentialCommandGroup( // 3s
       new AutoMoveToShoot(pivot).withTimeout(1),
-      new AutoShoot(intake).withTimeout(2)
+      new AutoShoot(intake).withTimeout(2.5)
     ));
-    autoSelector.addOption("1P_R", new SequentialCommandGroup( // 3s
+    autoSelector.addOption("2P", new SequentialCommandGroup( // 12s 14 degree neg skew per meter
       new AutoMoveToShoot(pivot).withTimeout(1),
-      new AutoShoot(intake).withTimeout(2),
-      new InstantCommand(() -> swerve.resetGyro(45), swerve)
-    ));
-    autoSelector.addOption("2P", new SequentialCommandGroup( // 12s
-      new AutoMoveToShoot(pivot).withTimeout(1),
-      new AutoShoot(intake).withTimeout(2),
+      new AutoShoot(intake).withTimeout(3),
       new AutoMoveToIntake(pivot).withTimeout(1),
-      new ParallelCommandGroup(new AutoIntake(intake), new AutonSwerveDrive(swerve, () -> 0.9, () -> 0, () -> 0, () -> false)).withTimeout(2),
-      new AutonSwerveDrive(swerve, () -> -0.9, () -> 0, () -> 0, () -> false).withTimeout(2),
-      new AutoShoot(intake).withTimeout(2),
-      new AutonSwerveDrive(swerve, () -> 1.5, () -> 0, () -> 0, () -> false).withTimeout(2)
-    ));
+      new ParallelCommandGroup(new AutoIntake(intake), new AutonSwerveDrive(swerve, () -> 0.8, () -> 0, () -> 0.8 / 360f * 14f, () -> false)).withTimeout(2),
+      new AutonSwerveDrive(swerve, () -> -0.9, () -> 0, () -> -0.9/ 360f * 14f, () -> false).withTimeout(2),
+      new AutoMoveToShoot(pivot).withTimeout(1),
+      new AutoShoot(intake).withTimeout(3)
+      ));
     autoSelector.addOption("3P_CENTER_RIGHT", new SequentialCommandGroup( // 14s
-      new AutoMoveToShoot(pivot).withTimeout(1), // rotate arm to speaker angle
-      new AutoShoot(intake).withTimeout(2), // shoot preloaded piece
-      new ParallelCommandGroup(new AutoMoveToIntake(pivot), new AutoIntake(intake), new AutonSwerveDrive(swerve, () -> 1.8, () -> 0, () -> 0, () -> false)).withTimeout(1), // rotate arm to intake angle, move 1.8 meters forward while running ground intake
-      new AutoMoveToShootSpecific(pivot, 47.3).withTimeout(1), // rotate arm to speaker angle accounting for 1.8 meters away
-      new AutoShoot(intake).withTimeout(2), // shoot from 1.8 meters away
-      new ParallelCommandGroup(new AutoMoveToIntake(pivot), new AutoIntake(intake), new AutonSwerveDrive(swerve, () -> -0.9, () -> 0, ()-> -Math.PI / 4, () -> false)).withTimeout(2), // rotate arm to intake angle, rotate bot -90 degrees and move to third piece while running ground intake
-      new AutonSwerveDrive(swerve, () -> 0, () -> 0, () -> Math.PI / 4, () -> false).withTimeout(2), // rotate bot 90 degrees
-      new AutoMoveToShootSpecific(pivot, 47.3).withTimeout(1), // rotate arm to speaker angle accounting for 1.8 meters away
-      new AutoShoot(intake).withTimeout(2) // shoot piece
+      new AutoMoveToShoot(pivot).withTimeout(1),
+      new AutoShoot(intake).withTimeout(3),
+      new AutoMoveToIntake(pivot).withTimeout(1),
+      new ParallelCommandGroup(new AutoIntake(intake), new AutonSwerveDrive(swerve, () -> 0.8, () -> 0, () -> 0.8 / 360f * 14f, () -> false)).withTimeout(2),
+      new AutonSwerveDrive(swerve, () -> -0.9, () -> 0, () -> -0.9/ 360f * 14f, () -> false).withTimeout(2),
+      new AutoMoveToShoot(pivot).withTimeout(1),
+      new AutoShoot(intake).withTimeout(3),
+      new AutoMoveToIntake(pivot).withTimeout(1),
+      new ParallelCommandGroup(new AutoIntake(intake), new AutonSwerveDrive(swerve, () -> 0.8, () -> -1, () -> 56f / 360f, () -> false)).withTimeout(2),
+      new AutoMoveToShoot(pivot).withTimeout(1),
+      new AutonSwerveDrive(swerve, () -> -0.85, () -> 1, () -> -56f / 360f, () -> false).withTimeout(2),
+      new AutoShoot(intake).withTimeout(3)
     ));
+
+    autoSelector.addOption("3P_CENTER_RIGHT_TEST", new SequentialCommandGroup( // 14s
+      new AutoSpool(intake).withTimeout(2),
+      new AutoMoveToShoot(pivot).withTimeout(0.5),
+      new AutoShoot(intake).withTimeout(0.75),
+      new AutoMoveToIntake(pivot).withTimeout(0.5),
+      new ParallelCommandGroup(new AutoIntake(intake), new RotationalAutonSwerveDrive(swerve, () -> 0.8, () -> 0, () -> 0, () -> false)).withTimeout(2),
+      new AutoMoveToShootSpecific(pivot, 32).withTimeout(0.5),
+      new AutoShoot(intake).withTimeout(0.75),
+      new AutoMoveToIntake(pivot).withTimeout(0.5),
+      new ParallelCommandGroup(new AutoIntake(intake), new RotationalAutonSwerveDrive(swerve, () -> 0.2, () -> -0.85, () -> Math.PI * 3f / 2f, () -> false)).withTimeout(2),
+      new RotationalAutonSwerveDrive(swerve, () -> -0.2, () -> 0.85, () -> 0, () -> false).withTimeout(2),
+      new AutoMoveToShootSpecific(pivot, 32).withTimeout(0.5),
+      new AutoShoot(intake).withTimeout(0.75)
+    ));
+
+    autoSelector.addOption("4P_TEST", new SequentialCommandGroup( // 14s
+      new InstantCommand(() -> swerve.resetGyro(0), swerve),
+      new AutoSpool(intake).withTimeout(2),
+      new AutoMoveToShoot(pivot).withTimeout(1),
+      new AutoShoot(intake).withTimeout(0.75),
+      new AutoMoveToIntake(pivot).withTimeout(0.5),
+      new ParallelCommandGroup(new AutoIntake(intake), new RotationalAutonSwerveDrive(swerve, () -> 1, () -> 0, () -> 0, () -> false)).withTimeout(2),
+      new AutoMoveToShootSpecific(pivot, 28).withTimeout(2),
+      new AutoShoot(intake).withTimeout(0.75),
+      new AutoMoveToIntake(pivot).withTimeout(0.5),
+      new ParallelCommandGroup(new AutoIntake(intake), new RotationalAutonSwerveDrive(swerve, () -> 0, () -> -0.85, () -> Math.PI * 3f / 2f, () -> false)).withTimeout(2),
+      new ParallelCommandGroup(new AutoMoveToShootSpecific(pivot, 28), new AutoSpool(intake), new RotationalAutonSwerveDrive(swerve, () -> -0.5, () -> 0.85, () -> 0, () -> false)).withTimeout(2),
+      new AutoShoot(intake).withTimeout(0.75),
+      new AutoMoveToIntake(pivot).withTimeout(0.5),
+      new ParallelCommandGroup(new AutoIntake(intake), new RotationalAutonSwerveDrive(swerve, () -> 0.2, () -> 0.85, () -> Math.PI / 2f, () -> false)).withTimeout(2),
+      new ParallelCommandGroup(new AutoMoveToShootSpecific(pivot, 28), new AutoSpool(intake), new RotationalAutonSwerveDrive(swerve, () -> -0.2, () -> -0.85, () -> 0, () -> false)).withTimeout(2),
+      new AutoShoot(intake).withTimeout(0.75)
+    ));
+
+    autoSelector.addOption("Test_PathPlannerA", new SequentialCommandGroup(new AutoResetGyroAuto(swerve), AutoBuilder.buildAuto("TESTA")));
     
     SmartDashboard.putData("Auto Selector", autoSelector);
   }

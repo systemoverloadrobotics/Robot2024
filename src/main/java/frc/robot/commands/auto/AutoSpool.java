@@ -11,14 +11,14 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
-public class AutoShoot extends Command {
+public class AutoSpool extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Intake intake;
   private final LinearFilter lf;
   private boolean flag;
   private double flagDelayStart;
   
-  public AutoShoot(Intake subsystem) {
+  public AutoSpool(Intake subsystem) {
     intake = subsystem;
     flag = false;
     this.lf = LinearFilter.movingAverage(20);
@@ -33,7 +33,6 @@ public class AutoShoot extends Command {
   @Override
   public void execute() {
     intake.setFlywheels();
-    intake.outtake();
   }
 
   // Called once the command ends or is interrupted.
